@@ -1,0 +1,60 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.NDraw" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+    <style name="Theme.NDraw" parent="Base.Theme.NDraw" />
+
+    <style name="ShapeAppearanceOverlay.App.FAB.Round" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="UTM_Azuki_34">
+        <item name="fontFamily">@font/utm_azuki</item>
+        <item name="android:textSize">34sp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="UTM_Azuki_26">
+        <item name="fontFamily">@font/utm_azuki</item>
+        <item name="android:textSize">26sp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="roboto_14">
+        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/gray</item>
+    </style>
+
+    <style name="roboto_16">
+        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/gray</item>
+    </style>
+
+    <style name="roboto_20">
+        <item name="fontFamily">@font/roboto_regular</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/gray</item>
+    </style>
+
+    <style name="sketch_block_24">
+        <item name="fontFamily">@font/sketch_block</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/deep_gray</item>
+    </style>
+
+    <style name="inter_16">
+        <item name="fontFamily">@font/inter_regular</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/gray</item>
+    </style>
+</resources>

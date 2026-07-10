@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">NDraw</string>
+
+    <string name="splash_title">Draw Cartoon: AR\nDrawing</string>
+    <string name="splash_hint_bottom">This action can contain ads</string>
+    <string name="intro_hint">intro</string>
+    <string name="intro_1_title">Pencil Sketch Any Picture</string>
+    <string name="intro_2_title">Make Drawing Video</string>
+    <string name="intro_3_title">Various Templates</string>
+    <string name="btn_next">Next</string>
+    <string name="btn_continue">Continue</string>
+
+    <style name="permission_title">Permission</style>
+
+    <string name="permission_des">Allow Draw Cartoon: AR Drawing to access\nphotos, media and files on your device</string>
+    <string name="media_title">Media</string>
+    <string name="permission_title">Permission</string>
+    <string name="trending_title">Trendings</string>
+    <string name="draw_cartoon_title">Draw Cartoon</string>
+    <string name="setting_title">Setting</string>
+    <string name="create_tv">Create</string>
+    <string name="category_tv">Category</string>
+    <string name="my_work_tv">My Work</string>
+</resources>
