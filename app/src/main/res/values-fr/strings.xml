@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NDraw</string>
+    <string name="splash_title">Draw Cartoon: AR Drawing</string>
+    <string name="splash_hint_bottom">Cette action peut contenir des publicités.</string>
+    <string name="intro_hint">intro</string>
+    <string name="intro_1_title">Esquisse au crayon de toute image</string>
+    <string name="intro_2_title">Créer une vidéo de dessin</string>
+    <string name="intro_3_title">Divers modèles</string>
+    <string name="btn_next">Suivant</string>
+    <string name="btn_continue">Continuer</string>
+    <string name="permission_des">Autoriser Draw Cartoon: AR Drawing à accéder\naux photos, médias et fichiers de votre appareil</string>
+    <string name="permission_des_bold">Draw Cartoon: AR Drawing</string>
+    <string name="media_title">Médias</string>
+    <string name="permission_title">Autorisation</string>
+    <string name="trending_title">Tendances</string>
+    <string name="draw_cartoon_title">Dessiner un cartoon</string>
+    <string name="setting_title">Paramètres</string>
+    <string name="create_tv">Créer</string>
+    <string name="category_tv">Catégorie</string>
+    <string name="my_work_tv">Mon travail</string>
+
+    <string name="language_title">Langue</string>
+    <string name="rate_title">Évaluez-nous</string>
+    <string name="share_title">Partager l\'application</string>
+    <string name="privacy_title">Politique de confidentialité</string>
+</resources>

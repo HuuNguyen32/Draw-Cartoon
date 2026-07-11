@@ -106,6 +106,7 @@
         android:background="@drawable/item_main_bg"
         android:padding="2dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@id/guideline"
         app:layout_constraintTop_toBottomOf="@id/top_bar_container">
 
@@ -224,12 +225,14 @@
         android:id="@+id/trending_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="10dp"
-        android:scrollbars="vertical"
+        android:paddingHorizontal="10dp"
+        app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_trending" />
+        app:layout_constraintTop_toBottomOf="@id/tv_trending"
+        app:spanCount="2"
+        tools:listitem="@layout/trending_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

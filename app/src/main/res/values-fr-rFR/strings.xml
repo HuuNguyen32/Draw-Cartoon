@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="app_name">NDraw</string>
-    <string name="splash_title">Draw Cartoon: AR Drawing</string>
-    <string name="splash_hint_bottom">Cette action peut contenir des publicités.</string>
-</resources>

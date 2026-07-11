@@ -9,6 +9,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import nhn.ntech.ndraw.consts.Const
 import nhn.ntech.ndraw.utils.LanguageUtils
 import nhn.ntech.ndraw.databinding.ActivityLanguageBinding
 import nhn.ntech.ndraw.domain.prefs.UserPreferences
@@ -21,6 +22,7 @@ class LanguageActivity : AppCompatActivity() {
     private lateinit var viewModel: LanguageViewModel
     private lateinit var userPreferences: UserPreferences
     private lateinit var languageSelected: Language
+    private var flow: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +31,9 @@ class LanguageActivity : AppCompatActivity() {
         setContentView(binding.root)
         userPreferences = UserPreferences(this)
         val factory = LanguageViewModelFactory(userPreferences)
-        viewModel = ViewModelProvider(owner = this, factory = factory)[LanguageViewModel::class.java]
+        viewModel =
+            ViewModelProvider(owner = this, factory = factory)[LanguageViewModel::class.java]
+        flow = intent.getIntExtra(Const.FLOW_TAG, -1)
         setPaddingScreen()
         setAdapter()
         initData()
@@ -37,7 +41,7 @@ class LanguageActivity : AppCompatActivity() {
     }
 
     private fun initData() {
-        viewModel.language.observe(this) {language ->
+        viewModel.language.observe(this) { language ->
             languageSelected = language
             Log.d("Language", language.name)
         }
@@ -46,9 +50,19 @@ class LanguageActivity : AppCompatActivity() {
     private fun setOnClickListener() {
         binding.btnCheck.setOnClickListener { view ->
             viewModel.saveLanguage(languageSelected)
-            LanguageUtils.setLocale(this, languageSelected)
-            startActivity(Intent(this, IntroActivity::class.java))
-            finish()
+            LanguageUtils.setLocale(this, languageSelected.code)
+            when (flow) {
+                Const.FLOW_SPLASH_CODE -> {
+                    startActivity(Intent(this, IntroActivity::class.java))
+                    finish()
+                }
+
+                Const.FLOW_SETTING_CODE -> {
+                    finish()
+                }
+
+                else -> finish()
+            }
         }
     }
 

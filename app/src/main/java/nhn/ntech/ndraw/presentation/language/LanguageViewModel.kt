@@ -28,4 +28,8 @@ class LanguageViewModel(
     fun setLanguage(language: Language) {
         _language.value = language
     }
+
+    fun getLanguage(): String? {
+        return userPreferences.getLanguage()
+    }
 }

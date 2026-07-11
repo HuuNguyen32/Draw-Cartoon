@@ -9,10 +9,8 @@
     <string name="intro_3_title">Various Templates</string>
     <string name="btn_next">Next</string>
     <string name="btn_continue">Continue</string>
-
-    <style name="permission_title">Permission</style>
-
     <string name="permission_des">Allow Draw Cartoon: AR Drawing to access\nphotos, media and files on your device</string>
+    <string name="permission_des_bold">Draw Cartoon: AR Drawing</string>
     <string name="media_title">Media</string>
     <string name="permission_title">Permission</string>
     <string name="trending_title">Trendings</string>
@@ -21,4 +19,9 @@
     <string name="create_tv">Create</string>
     <string name="category_tv">Category</string>
     <string name="my_work_tv">My Work</string>
+    
+    <string name="language_title">Language</string>
+    <string name="rate_title">Rate Us</string>
+    <string name="share_title">Share App</string>
+    <string name="privacy_title">Privacy Policy</string>
 </resources>

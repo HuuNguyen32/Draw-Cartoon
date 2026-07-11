@@ -16,8 +16,8 @@ object LanguageUtils {
         Language("id", "Indonesian", R.drawable.flag_indonesian)
     )
 
-    fun setLocale(context: Context, language: Language) {
-        val locale = Locale(language.code)
+    fun setLocale(context: Context, languageCode: String) {
+        val locale = Locale(languageCode)
         Locale.setDefault(locale)
         val config = context.resources.configuration
         config.setLocale(locale)

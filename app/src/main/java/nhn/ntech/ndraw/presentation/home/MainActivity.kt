@@ -9,6 +9,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.databinding.ActivityMainBinding
+import nhn.ntech.ndraw.presentation.category.CategoryActivity
 import nhn.ntech.ndraw.presentation.setting.SettingActivity
 import nhn.ntech.ndraw.utils.TransferUtils
 
@@ -33,6 +34,10 @@ class MainActivity : AppCompatActivity() {
         with(binding) {
             btnSetting.setOnClickListener {
                 startActivity(Intent(this@MainActivity, SettingActivity::class.java))
+            }
+
+            btnCategory.setOnClickListener {
+                startActivity(Intent(this@MainActivity, CategoryActivity::class.java))
             }
         }
     }
@@ -60,16 +65,18 @@ class MainActivity : AppCompatActivity() {
 
         }
         binding.trendingRecyclerView.layoutManager =
-            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL).apply {
+                gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
+            }
         binding.trendingRecyclerView.adapter = adapter
-        binding.trendingRecyclerView.addItemDecoration(
-            SpacingItemDecoration(
-                TransferUtils.dpToPx(
-                    this,
-                    6
-                ), 2
-            )
-        )
+//        binding.trendingRecyclerView.addItemDecoration(
+//            SpacingItemDecoration(
+//                TransferUtils.dpToPx(
+//                    this,
+//                    6
+//                ), 2
+//            )
+//        )
     }
 
     private fun setPaddingScreen() {

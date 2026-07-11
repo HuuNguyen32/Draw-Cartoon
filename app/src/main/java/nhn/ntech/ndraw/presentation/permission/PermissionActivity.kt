@@ -90,7 +90,7 @@ class PermissionActivity : AppCompatActivity() {
             tvPermissionDes.setTextColor(
                 this@PermissionActivity,
                 getString(R.string.permission_des),
-                "Draw Cartoon: AR Drawing",
+                getString(R.string.permission_des_bold),
                 R.color.dot_selected,
                 Typeface.BOLD,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
