@@ -34,10 +34,17 @@ class PermissionActivity : AppCompatActivity() {
 
     companion object {
         private const val REQUEST_MEDIA_PERMISSION = 100
+        private const val REQUEST_CAMERA_PERMISSION = 200
     }
 
     private var denyCount = 0
     private var isHasMediaPermission = false
+    private val photoPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        Manifest.permission.READ_MEDIA_IMAGES
+    } else {
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    }
+    private val cameraPermission = Manifest.permission.CAMERA
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,33 +55,31 @@ class PermissionActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this)[PermissionViewModel::class.java]
         initView()
         setUpListeners()
+        observeState()
     }
 
     override fun onResume() {
         super.onResume()
-        val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            Manifest.permission.READ_MEDIA_IMAGES
-        } else {
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        }
-        val isPermissionGranted =
-            ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
-        binding.switchPermission.isChecked = isPermissionGranted
-        viewModel.setPermissionGranted(isPermissionGranted)
+        val isPhotoPermissionGranted = requestCheckPermission(photoPermission)
+        val isCameraPermissionGranted = requestCheckPermission(cameraPermission)
+        binding.switchPermission.isChecked = isPhotoPermissionGranted
+        viewModel.setPermissionGranted(isPhotoPermissionGranted)
+        binding.cameraSwitchPermission.isChecked = isCameraPermissionGranted
+        viewModel.setCameraPermissionGranted(isCameraPermissionGranted)
     }
 
     private fun setUpListeners() {
         binding.permissionSwitchContainer.setOnClickListener {
-            requestMediaPermission()
+            requestMediaPermission(photoPermission, REQUEST_MEDIA_PERMISSION)
+        }
+
+        binding.cameraPermissionSwitchContainer.setOnClickListener {
+            requestMediaPermission(cameraPermission, REQUEST_CAMERA_PERMISSION)
         }
 
         binding.btnContinue.setOnClickListener {
-            if (isHasMediaPermission) {
-                startActivity(Intent(this, MainActivity::class.java))
-                finishAffinity()
-            } else {
-                Toast.makeText(this, "Please enable permissions", Toast.LENGTH_SHORT).show()
-            }
+            startActivity(Intent(this, MainActivity::class.java))
+            finishAffinity()
         }
     }
 
@@ -96,29 +101,29 @@ class PermissionActivity : AppCompatActivity() {
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
         }
+    }
 
+    private fun observeState() {
         viewModel.isPermissionGranted.observe(this) { isPermissionGranted ->
             isHasMediaPermission = isPermissionGranted
         }
+
+        viewModel.isCameraPermissionGranted.observe(this) { isCameraPermissionGranted ->
+
+        }
     }
 
-    private fun requestMediaPermission() {
-        val photoPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            Manifest.permission.READ_MEDIA_IMAGES
-        } else {
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        }
-
+    private fun requestMediaPermission(permission: String, requestCode: Int) {
         val isPermissionGranted = ContextCompat.checkSelfPermission(
             this,
-            photoPermission
+            permission
         ) == PackageManager.PERMISSION_GRANTED
         if (!isPermissionGranted) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, photoPermission)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
                 ActivityCompat.requestPermissions(
                     this,
-                    arrayOf(photoPermission),
-                    REQUEST_MEDIA_PERMISSION
+                    arrayOf(permission),
+                    requestCode
                 )
             } else {
                 if (denyCount == 2) {
@@ -131,12 +136,19 @@ class PermissionActivity : AppCompatActivity() {
                 } else {
                     ActivityCompat.requestPermissions(
                         this,
-                        arrayOf(photoPermission),
-                        REQUEST_MEDIA_PERMISSION
+                        arrayOf(permission),
+                        requestCode
                     )
                 }
             }
         }
+    }
+
+    private fun requestCheckPermission(permission: String): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            permission
+        ) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onRequestPermissionsResult(
@@ -144,6 +156,7 @@ class PermissionActivity : AppCompatActivity() {
         permissions: Array<out String>,
         grantResults: IntArray,
     ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_MEDIA_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show()
@@ -154,6 +167,20 @@ class PermissionActivity : AppCompatActivity() {
                 Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
                 binding.switchPermission.isChecked = false
                 viewModel.setPermissionGranted(false)
+                if (denyCount == 2) goToSetting()
+            }
+        }
+
+        if (requestCode == REQUEST_CAMERA_PERMISSION) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show()
+                binding.cameraSwitchPermission.isChecked = true
+                viewModel.setCameraPermissionGranted(true)
+            } else {
+                denyCount++
+                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+                binding.cameraSwitchPermission.isChecked = false
+                viewModel.setCameraPermissionGranted(false)
                 if (denyCount == 2) goToSetting()
             }
         }

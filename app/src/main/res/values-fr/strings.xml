@@ -24,4 +24,14 @@
     <string name="rate_title">Évaluez-nous</string>
     <string name="share_title">Partager l\'application</string>
     <string name="privacy_title">Politique de confidentialité</string>
+    <string name="rate_btn_title">Évaluer</string>
+    <string name="exit_title">Quitter</string>
+
+    <string name="no_star_title">Aimez-vous l\'application ?</string>
+    <string name="one_to_three_star_title">Oh non !</string>
+    <string name="four_five_start_title">Nous vous aimons aussi !</string>
+
+    <string name="no_star_des">Faites-nous part de votre expérience</string>
+    <string name="one_to_three_star_des">Veuillez nous donner vos commentaires</string>
+    <string name="four_five_start_des">Merci pour vos retours</string>
 </resources>

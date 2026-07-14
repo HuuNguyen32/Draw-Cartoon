@@ -1,9 +1,17 @@
 package nhn.ntech.ndraw.presentation.home
 
+import android.Manifest
+import android.content.ContentValues
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -11,13 +19,35 @@ import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.databinding.ActivityMainBinding
 import nhn.ntech.ndraw.presentation.category.CategoryActivity
 import nhn.ntech.ndraw.presentation.setting.SettingActivity
-import nhn.ntech.ndraw.utils.TransferUtils
+import nhn.ntech.ndraw.utils.DialogUtils
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: MainAdapter
     private lateinit var viewModel: MainViewModel
+    private var photoUri: Uri? = null
+
+    private val cameraPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                openCamera()
+            } else {
+                Toast.makeText(this, "Camera permission is required", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+    private val cameraLauncher =
+        registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+            if (success) {
+                photoUri?.let { uri -> handleImageUri(uri) }
+            }
+        }
+
+    private val galleryLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            uri?.let { handleImageUri(it) }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +64,18 @@ class MainActivity : AppCompatActivity() {
         with(binding) {
             btnSetting.setOnClickListener {
                 startActivity(Intent(this@MainActivity, SettingActivity::class.java))
+            }
+
+            btnCreate.setOnClickListener {
+                DialogUtils.createDrawDialog(
+                    this@MainActivity,
+                    fromCamera = {
+                        checkCameraPermissionAndOpen()
+                    },
+                    fromGallery = {
+                        galleryLauncher.launch("image/*")
+                    }
+                )
             }
 
             btnCategory.setOnClickListener {
@@ -69,20 +111,36 @@ class MainActivity : AppCompatActivity() {
                 gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
             }
         binding.trendingRecyclerView.adapter = adapter
-//        binding.trendingRecyclerView.addItemDecoration(
-//            SpacingItemDecoration(
-//                TransferUtils.dpToPx(
-//                    this,
-//                    6
-//                ), 2
-//            )
-//        )
+    }
+
+    private fun checkCameraPermissionAndOpen() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+            openCamera()
+        } else {
+            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+    }
+
+    private fun openCamera() {
+        val values = ContentValues().apply {
+            put(MediaStore.Images.Media.TITLE, "ndraw_${System.currentTimeMillis()}")
+            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+        }
+        photoUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+        photoUri?.let { cameraLauncher.launch(it) }
+            ?: Toast.makeText(this, "Could not create image file", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun handleImageUri(uri: Uri) {
+        Toast.makeText(this, "Image selected: ${uri.lastPathSegment}", Toast.LENGTH_SHORT).show()
     }
 
     private fun setPaddingScreen() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
     }

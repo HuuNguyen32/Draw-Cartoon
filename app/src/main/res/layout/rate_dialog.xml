@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rate_dialog_bg"
+    android:minWidth="280dp"
+    android:padding="24dp">
+
+    <ImageView
+        android:id="@+id/iv_rate"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:clipToOutline="true"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/img_rate_0" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        style="@style/roboto_20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_rate"
+        tools:text="Title" />
+
+    <TextView
+        android:id="@+id/tv_des"
+        style="@style/roboto_14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:alpha="0.6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        tools:text="Title" />
+
+    <com.willy.ratingbar.ScaleRatingBar
+        android:id="@+id/rb_rate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_des"
+        app:srb_clearRatingEnabled="true"
+        app:srb_clickable="true"
+        app:srb_drawableEmpty="@drawable/ic_star"
+        app:srb_drawableFilled="@drawable/ic_fill_star"
+        app:srb_isIndicator="false"
+        app:srb_minimumStars="0"
+        app:srb_numStars="5"
+        app:srb_scrollable="true"
+        app:srb_starHeight="30dp"
+        app:srb_starPadding="4dp"
+        app:srb_starWidth="30dp"
+        app:srb_stepSize="1" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_rate"
+        style="@style/roboto_16"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/gradient_btn_bg"
+        android:minHeight="40dp"
+        android:text="@string/rate_btn_title"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rb_rate" />
+
+    <TextView
+        android:id="@+id/btn_exit"
+        style="@style/roboto_16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/exit_title"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_rate" />
+</androidx.constraintlayout.widget.ConstraintLayout>

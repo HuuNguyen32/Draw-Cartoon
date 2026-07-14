@@ -19,9 +19,24 @@
     <string name="create_tv">Create</string>
     <string name="category_tv">Category</string>
     <string name="my_work_tv">My Work</string>
-    
+
     <string name="language_title">Language</string>
     <string name="rate_title">Rate Us</string>
     <string name="share_title">Share App</string>
     <string name="privacy_title">Privacy Policy</string>
+    <string name="rate_btn_title">Rate</string>
+    <string name="exit_title">Exit</string>
+    <string name="from_camera_title">From Camera</string>
+    <string name="from_gallery_title">From Gallery</string>
+
+    <string name="no_star_title">Do you like the app?</string>
+    <string name="one_to_three_star_title">Oh, no!</string>
+    <string name="four_five_start_title">We love you too!</string>
+
+    <string name="no_star_des">Let us know your experience</string>
+    <string name="one_to_three_star_des">Please give us some feedback</string>
+    <string name="four_five_start_des">Thanks for your feedback</string>
+
+    <string name="create_draw_title">Create Draw</string>
+    <string name="camera_title">Camera</string>
 </resources>

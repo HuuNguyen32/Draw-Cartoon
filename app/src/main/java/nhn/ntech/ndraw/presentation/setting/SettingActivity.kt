@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.databinding.ActivitySettingBinding
 import nhn.ntech.ndraw.presentation.language.LanguageActivity
+import nhn.ntech.ndraw.utils.DialogUtils
 
 class SettingActivity : AppCompatActivity() {
 
@@ -45,7 +46,11 @@ class SettingActivity : AppCompatActivity() {
                 1 -> {
                     startActivity(Intent(this, LanguageActivity::class.java))
                 }
-                2 -> {}
+                2 -> {
+                    DialogUtils.createRateDialog(this) {
+
+                    }
+                }
                 3 -> {}
                 4 -> {}
             }

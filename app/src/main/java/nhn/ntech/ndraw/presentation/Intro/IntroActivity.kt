@@ -13,9 +13,12 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.databinding.ActivityIntroBinding
+import nhn.ntech.ndraw.domain.prefs.UserPreferences
+import nhn.ntech.ndraw.presentation.home.MainActivity
 import nhn.ntech.ndraw.presentation.permission.PermissionActivity
 import nhn.ntech.ndraw.utils.setTextGradientColor
 
@@ -23,6 +26,7 @@ class IntroActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityIntroBinding
     private lateinit var viewModel: IntroViewModel
+    private lateinit var userPreferences: UserPreferences
     private lateinit var adapter: IntroAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +35,9 @@ class IntroActivity : AppCompatActivity() {
         binding = ActivityIntroBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setPaddingScreen()
+        userPreferences = UserPreferences(this)
+        val factory = IntroViewModelFactory(userPreferences)
+        viewModel = ViewModelProvider(this, factory)[IntroViewModel::class.java]
         initView()
         setAdapter()
         setOnClickListener()
@@ -43,8 +50,14 @@ class IntroActivity : AppCompatActivity() {
                 binding.introViewPager.setCurrentItem(currentItem + 1, true)
                 updateIndicator(currentItem + 1)
             } else {
-                startActivity(Intent(this, PermissionActivity::class.java))
-                finish()
+                if (!viewModel.getPermissionVisited()) {
+                    viewModel.setPermissionVisited(true)
+                    startActivity(Intent(this, PermissionActivity::class.java))
+                    finish()
+                } else {
+                    startActivity(Intent(this, MainActivity::class.java))
+                    finishAffinity()
+                }
             }
         }
     }

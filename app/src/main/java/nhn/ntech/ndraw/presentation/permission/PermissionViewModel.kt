@@ -8,7 +8,13 @@ class PermissionViewModel : ViewModel() {
     private val _isPermissionGranted = MutableLiveData<Boolean>()
     val isPermissionGranted: LiveData<Boolean> = _isPermissionGranted
 
+    private val _isCameraPermissionGranted = MutableLiveData<Boolean>()
+    val isCameraPermissionGranted: LiveData<Boolean> = _isCameraPermissionGranted
     fun setPermissionGranted(granted: Boolean) {
         _isPermissionGranted.value = granted
+    }
+
+    fun setCameraPermissionGranted(granted: Boolean) {
+        _isCameraPermissionGranted.value = granted
     }
 }

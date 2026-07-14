@@ -16,4 +16,12 @@ class UserPreferences(context: Context) {
         return sharedPreferences.getString("language", null)
     }
 
+    fun isPermissionScreenVisited(isVisited: Boolean) {
+        editor.putBoolean("permission_screen_visited", isVisited)
+        editor.apply()
+    }
+
+    fun getPermissionScreenVisited(): Boolean {
+        return sharedPreferences.getBoolean("permission_screen_visited", false)
+    }
 }
