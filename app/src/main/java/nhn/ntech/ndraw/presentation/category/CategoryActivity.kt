@@ -2,19 +2,19 @@ package nhn.ntech.ndraw.presentation.category
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import nhn.ntech.ndraw.BaseActivity
 import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.databinding.ActivityCategoryBinding
 import nhn.ntech.ndraw.presentation.home.MainAdapter
 import nhn.ntech.ndraw.presentation.home.SpacingItemDecoration
 import nhn.ntech.ndraw.utils.TransferUtils
 
-class CategoryActivity : AppCompatActivity() {
+class CategoryActivity : BaseActivity() {
 
     private lateinit var binding: ActivityCategoryBinding
     private lateinit var viewModel: CategoryViewModel

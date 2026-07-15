@@ -15,6 +15,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
+import nhn.ntech.ndraw.BaseActivity
 import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.databinding.ActivityIntroBinding
 import nhn.ntech.ndraw.domain.prefs.UserPreferences
@@ -22,7 +23,7 @@ import nhn.ntech.ndraw.presentation.home.MainActivity
 import nhn.ntech.ndraw.presentation.permission.PermissionActivity
 import nhn.ntech.ndraw.utils.setTextGradientColor
 
-class IntroActivity : AppCompatActivity() {
+class IntroActivity : BaseActivity() {
 
     private lateinit var binding: ActivityIntroBinding
     private lateinit var viewModel: IntroViewModel

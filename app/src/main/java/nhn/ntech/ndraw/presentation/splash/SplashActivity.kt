@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import nhn.ntech.ndraw.BaseActivity
 import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.consts.Const
 import nhn.ntech.ndraw.databinding.ActivitySplashBinding
@@ -18,7 +19,7 @@ import nhn.ntech.ndraw.presentation.Intro.IntroActivity
 import nhn.ntech.ndraw.presentation.language.LanguageActivity
 import nhn.ntech.ndraw.utils.LanguageUtils
 
-class SplashActivity : AppCompatActivity() {
+class SplashActivity : BaseActivity() {
 
     private lateinit var binding: ActivitySplashBinding
     private lateinit var viewModel: SplashViewModel

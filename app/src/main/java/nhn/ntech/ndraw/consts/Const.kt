@@ -9,4 +9,6 @@ object Const {
     const val FLOW_TAG = "flow_code"
     const val FLOW_SPLASH_CODE = 0
     const val FLOW_SETTING_CODE = 1
+
+    const val IMAGE_URI_TAG = "image_uri"
 }

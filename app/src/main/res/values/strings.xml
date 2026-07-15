@@ -39,4 +39,6 @@
 
     <string name="create_draw_title">Create Draw</string>
     <string name="camera_title">Camera</string>
+    <string name="photo_title">Photo</string>
+    <string name="video_title">Video</string>
 </resources>

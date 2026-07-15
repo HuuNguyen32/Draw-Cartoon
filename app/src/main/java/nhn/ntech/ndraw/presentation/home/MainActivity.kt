@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,13 +16,16 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import nhn.ntech.ndraw.BaseActivity
 import nhn.ntech.ndraw.R
+import nhn.ntech.ndraw.consts.Const
 import nhn.ntech.ndraw.databinding.ActivityMainBinding
 import nhn.ntech.ndraw.presentation.category.CategoryActivity
 import nhn.ntech.ndraw.presentation.setting.SettingActivity
+import nhn.ntech.ndraw.presentation.sketching.SketchingActivity
 import nhn.ntech.ndraw.utils.DialogUtils
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: MainAdapter
@@ -134,7 +138,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleImageUri(uri: Uri) {
-        Toast.makeText(this, "Image selected: ${uri.lastPathSegment}", Toast.LENGTH_SHORT).show()
+        Log.d("MainActivity", "handleImageUri: $uri")
+        val intent = Intent(this, SketchingActivity::class.java)
+        intent.putExtra(Const.IMAGE_URI_TAG, uri.toString())
+        startActivity(intent)
     }
 
     private fun setPaddingScreen() {

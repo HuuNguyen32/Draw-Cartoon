@@ -1,6 +1,9 @@
 package nhn.ntech.ndraw.utils
 
 import android.content.Context
+import android.content.res.Configuration
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.presentation.language.Language
 import java.util.Locale
@@ -19,8 +22,21 @@ object LanguageUtils {
     fun setLocale(context: Context, languageCode: String) {
         val locale = Locale(languageCode)
         Locale.setDefault(locale)
-        val config = context.resources.configuration
+        val config = Configuration(context.resources.configuration)
         config.setLocale(locale)
         context.resources.updateConfiguration(config, context.resources.displayMetrics)
+    }
+
+    fun applyLocale(languageCode: String) {
+        val localeList = LocaleListCompat.forLanguageTags(languageCode)
+        AppCompatDelegate.setApplicationLocales(localeList)
+    }
+
+    fun wrapContext(context: Context, languageCode: String): Context {
+        val locale = Locale(languageCode)
+        Locale.setDefault(locale)
+        val config = Configuration(context.resources.configuration)
+        config.setLocale(locale)
+        return context.createConfigurationContext(config)
     }
 }

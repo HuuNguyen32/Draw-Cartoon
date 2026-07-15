@@ -14,6 +14,7 @@ import nhn.ntech.ndraw.utils.LanguageUtils
 import nhn.ntech.ndraw.databinding.ActivityLanguageBinding
 import nhn.ntech.ndraw.domain.prefs.UserPreferences
 import nhn.ntech.ndraw.presentation.Intro.IntroActivity
+import java.util.Locale
 
 class LanguageActivity : AppCompatActivity() {
 
@@ -77,10 +78,21 @@ class LanguageActivity : AppCompatActivity() {
         viewModel.languageList.observe(this) { languageList ->
             adapter.updateData(languageList)
             if (!languageList.isEmpty()) {
-                adapter.setSelectedPosition(0)
-                viewModel.setLanguage(languageList[0])
+                val position = getLanguagePosition(languageList)
+                adapter.setSelectedPosition(position)
+                viewModel.setLanguage(languageList[position])
             }
         }
+    }
+
+    private fun getLanguagePosition(languageList: List<Language>): Int {
+        val currentLanguage = viewModel.getLanguage() ?: "en"
+        for (i in languageList.indices) {
+            if (languageList[i].code == currentLanguage) {
+                return i
+            }
+        }
+        return 0
     }
 
     private fun setPaddingScreen() {

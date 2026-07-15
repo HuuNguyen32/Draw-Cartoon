@@ -21,13 +21,14 @@ import androidx.core.graphics.toColorInt
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
+import nhn.ntech.ndraw.BaseActivity
 import nhn.ntech.ndraw.presentation.home.MainActivity
 import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.databinding.ActivityPermissionBinding
 import nhn.ntech.ndraw.utils.setTextColor
 import nhn.ntech.ndraw.utils.setTextGradientColor
 
-class PermissionActivity : AppCompatActivity() {
+class PermissionActivity : BaseActivity() {
 
     private lateinit var binding: ActivityPermissionBinding
     private lateinit var viewModel: PermissionViewModel

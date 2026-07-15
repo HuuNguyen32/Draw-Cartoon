@@ -3,20 +3,21 @@ package nhn.ntech.ndraw.presentation.setting
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import nhn.ntech.ndraw.BaseActivity
 import nhn.ntech.ndraw.R
+import nhn.ntech.ndraw.consts.Const
 import nhn.ntech.ndraw.databinding.ActivitySettingBinding
 import nhn.ntech.ndraw.presentation.language.LanguageActivity
 import nhn.ntech.ndraw.utils.DialogUtils
 
-class SettingActivity : AppCompatActivity() {
+class SettingActivity : BaseActivity() {
 
     private lateinit var binding: ActivitySettingBinding
     private lateinit var adapter: SettingAdapter
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +45,8 @@ class SettingActivity : AppCompatActivity() {
         adapter = SettingAdapter(items) {
             when (it.id) {
                 1 -> {
-                    startActivity(Intent(this, LanguageActivity::class.java))
+                    val intent = Intent(this, LanguageActivity::class.java)
+                    startActivity(intent)
                 }
                 2 -> {
                     DialogUtils.createRateDialog(this) {
