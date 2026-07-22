@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/white_bg"
+    android:maxWidth="328dp"
+    android:paddingHorizontal="54dp"
+    android:paddingVertical="16dp">
+
+    <TextView
+        android:id="@+id/tv_title"
+        style="@style/roboto_20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/instruction_title"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_player"
+        android:layout_width="match_parent"
+        android:layout_height="280dp"
+        android:layout_marginTop="16dp"
+        app:cardBackgroundColor="@color/black"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title">
+
+        <androidx.media3.ui.PlayerView
+            android:id="@+id/player_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black" />
+
+    </androidx.cardview.widget.CardView>
+
+    <ImageView
+        android:id="@+id/btn_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_play"
+        app:layout_constraintBottom_toBottomOf="@id/cv_player"
+        app:layout_constraintEnd_toEndOf="@id/cv_player"
+        app:layout_constraintStart_toStartOf="@id/cv_player"
+        app:layout_constraintTop_toTopOf="@id/cv_player" />
+
+    <SeekBar
+        android:id="@+id/sb_video"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:maxHeight="3dp"
+        android:minHeight="2dp"
+        android:progress="0"
+        android:progressDrawable="@drawable/custom_seekbar_bg"
+        android:thumb="@drawable/custom_seekbar_thumb"
+        app:layout_constraintBottom_toBottomOf="@id/cv_player"
+        app:layout_constraintEnd_toEndOf="@id/cv_player"
+        app:layout_constraintStart_toStartOf="@id/cv_player" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_ok"
+        style="@style/roboto_16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/gradient_btn_bg"
+        android:minWidth="140dp"
+        android:text="@string/ok_title"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cv_player" />
+</androidx.constraintlayout.widget.ConstraintLayout>

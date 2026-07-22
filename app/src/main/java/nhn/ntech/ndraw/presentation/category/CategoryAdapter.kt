@@ -8,7 +8,7 @@ import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.databinding.CategoryItemBinding
 
 class CategoryAdapter(
-    private val categories: List<String>,
+    private var categories: List<String>,
     private val onItemClick: (String) -> Unit,
 ) : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
 
@@ -44,6 +44,12 @@ class CategoryAdapter(
                     R.color.category_unselected
                 )
             )
+            holder.binding.root.setBackgroundColor(
+                ContextCompat.getColor(
+                    holder.itemView.context,
+                    android.R.color.transparent
+                )
+            )
         }
         holder.binding.root.setOnClickListener {
             val previousSelectedPosition = selectedPosition
@@ -59,6 +65,11 @@ class CategoryAdapter(
     }
 
     override fun getItemCount(): Int = categories.size
+
+    fun updateData(newListData: List<String>) {
+        categories = newListData
+        notifyItemRangeChanged(0, itemCount)
+    }
 
     fun setSelectedPosition(position: Int) {
         val previous = selectedPosition

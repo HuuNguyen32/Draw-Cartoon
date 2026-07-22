@@ -13,4 +13,10 @@
     <color name="category_selected">#FFFFFF</color>
 
     <color name="bar_background">#66000000</color>
+    <color name="pale_violet">#F3E5FF</color>
+
+    <color name="basalt">#4B4B4B</color>
+    <color name="charcoal_cray">#3F3E3F</color>
+
+    <color name="bright_red">#FF3535</color>
 </resources>

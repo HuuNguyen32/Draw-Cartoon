@@ -52,6 +52,13 @@ dependencies {
     implementation("androidx.camera:camera-extensions:${camerax_version}")
 
     implementation("com.github.ome450901:SimpleRatingBar:1.5.1")
+    implementation("com.github.bumptech.glide:glide:5.0.5")
+
+    implementation("androidx.media3:media3-exoplayer:1.10.1")
+    implementation("androidx.media3:media3-exoplayer-dash:1.10.1")
+    implementation("androidx.media3:media3-ui:1.10.1")
+    implementation("androidx.media3:media3-ui-compose-material3:1.10.1")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

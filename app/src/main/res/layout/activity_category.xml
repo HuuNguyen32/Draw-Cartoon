@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/language_bg"
+    android:background="@drawable/common_bg"
     tools:context=".presentation.category.CategoryActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -53,7 +53,6 @@
         android:layout_height="0dp"
         android:paddingHorizontal="10dp"
         android:paddingTop="14dp"
-        android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

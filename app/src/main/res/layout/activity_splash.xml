@@ -23,23 +23,36 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tv_title"
-        style="@style/UTM_Azuki_34"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="@string/splash_title"
+    <ImageView
+        android:id="@+id/iv_title"
+        android:layout_width="264dp"
+        android:layout_height="76dp"
+        android:layout_marginTop="14dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/splash_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_logo" />
+
 
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="16dp"
         android:indeterminateDrawable="@drawable/linear_gradient_pg"
+        app:layout_constraintBottom_toTopOf="@id/tv_hint_ads"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_hint_ads"
+        style="@style/roboto_14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:alpha="0.5"
+        android:text="@string/splash_hint_bottom"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

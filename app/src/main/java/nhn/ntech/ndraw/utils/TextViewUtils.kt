@@ -10,8 +10,19 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.toColorInt
 
-fun TextView.setTextGradientColor(colors: IntArray, positions: FloatArray, shaderTile: Shader.TileMode = Shader.TileMode.CLAMP) {
+fun TextView.setTextGradientColor(
+    colors: IntArray = intArrayOf(
+        "#B7ADF4".toColorInt(),
+        "#DFA1F6".toColorInt()
+    ),
+    positions: FloatArray = floatArrayOf(
+        0f,
+        1f
+    ),
+    shaderTile: Shader.TileMode = Shader.TileMode.CLAMP,
+) {
     this.post {
         val width = this.width.toFloat()
         if (width > 0) {
@@ -28,7 +39,14 @@ fun TextView.setTextGradientColor(colors: IntArray, positions: FloatArray, shade
     }
 }
 
-fun TextView.setTextColor(context: Context, fullText: String, subText: String, color: Int, typeFace: Int = Typeface.NORMAL, flags: Int = Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) {
+fun TextView.setTextColor(
+    context: Context,
+    fullText: String,
+    subText: String,
+    color: Int,
+    typeFace: Int = Typeface.NORMAL,
+    flags: Int = Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
+) {
     val spannable = SpannableString(fullText)
     val startStr = spannable.indexOf(subText)
     val endStr = startStr + subText.length
@@ -49,4 +67,8 @@ fun TextView.setTextColor(context: Context, fullText: String, subText: String, c
         flags
     )
     this.text = spannable
+}
+
+fun TextView.clearTextShader() {
+    paint.shader = null
 }

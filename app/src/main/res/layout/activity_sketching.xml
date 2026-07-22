@@ -150,6 +150,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/btn_action" />
 
+        <ImageView
+            android:id="@+id/btn_flip_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/lock_bg"
+            android:padding="13dp"
+            android:src="@drawable/ic_flip_cam"
+            app:layout_constraintBottom_toBottomOf="@id/btn_action"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btn_action"
+            app:layout_constraintTop_toTopOf="@id/btn_action"
+            app:tint="@color/white" />
+
         <TextView
             android:id="@+id/tv_photo"
             style="@style/roboto_14"
@@ -174,6 +189,19 @@
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="@id/tv_photo"
             app:layout_constraintEnd_toStartOf="@id/tv_photo"
+            app:layout_constraintTop_toTopOf="@id/tv_photo" />
+
+        <TextView
+            android:id="@+id/tv_toggle_photo"
+            style="@style/roboto_14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="22dp"
+            android:text="@string/photo_title"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/tv_photo"
+            app:layout_constraintStart_toEndOf="@id/tv_photo"
             app:layout_constraintTop_toTopOf="@id/tv_photo" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

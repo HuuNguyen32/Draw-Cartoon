@@ -63,4 +63,25 @@ class SketchingViewModel : ViewModel() {
             state.copy(isCapturing = isCapturing)
         }
     }
+
+    fun updateRecording(isRecording: Boolean) {
+        _uiState.update { state ->
+            state.copy(isRecording = isRecording)
+        }
+    }
+
+    fun updateRecordingTime(time: String) {
+        _uiState.update { state ->
+            state.copy(recordingTime = time)
+        }
+    }
+
+    fun toggleFlipCamera() {
+        _uiState.update { state ->
+            val newLen = if (state.isFlipCamera == CameraSelector.DEFAULT_BACK_CAMERA)
+                CameraSelector.DEFAULT_FRONT_CAMERA
+            else CameraSelector.DEFAULT_BACK_CAMERA
+            state.copy(isFlipCamera = newLen)
+        }
+    }
 }

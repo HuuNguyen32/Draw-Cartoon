@@ -10,11 +10,10 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import nhn.ntech.ndraw.consts.Const
-import nhn.ntech.ndraw.utils.LanguageUtils
 import nhn.ntech.ndraw.databinding.ActivityLanguageBinding
 import nhn.ntech.ndraw.domain.prefs.UserPreferences
 import nhn.ntech.ndraw.presentation.Intro.IntroActivity
-import java.util.Locale
+import nhn.ntech.ndraw.presentation.home.MainActivity
 
 class LanguageActivity : AppCompatActivity() {
 
@@ -49,9 +48,8 @@ class LanguageActivity : AppCompatActivity() {
     }
 
     private fun setOnClickListener() {
-        binding.btnCheck.setOnClickListener { view ->
+        binding.btnCheck.setOnClickListener {
             viewModel.saveLanguage(languageSelected)
-            LanguageUtils.setLocale(this, languageSelected.code)
             when (flow) {
                 Const.FLOW_SPLASH_CODE -> {
                     startActivity(Intent(this, IntroActivity::class.java))
@@ -59,6 +57,7 @@ class LanguageActivity : AppCompatActivity() {
                 }
 
                 Const.FLOW_SETTING_CODE -> {
+                    startActivity(Intent(this, MainActivity::class.java))
                     finish()
                 }
 
@@ -77,7 +76,7 @@ class LanguageActivity : AppCompatActivity() {
         viewModel.loadLanguageList()
         viewModel.languageList.observe(this) { languageList ->
             adapter.updateData(languageList)
-            if (!languageList.isEmpty()) {
+            if (languageList.isNotEmpty()) {
                 val position = getLanguagePosition(languageList)
                 adapter.setSelectedPosition(position)
                 viewModel.setLanguage(languageList[position])

@@ -22,7 +22,7 @@
 
     <string name="language_title">Language</string>
     <string name="rate_title">Rate Us</string>
-    <string name="share_title">Share App</string>
+    <string name="share_app_title">Share App</string>
     <string name="privacy_title">Privacy Policy</string>
     <string name="rate_btn_title">Rate</string>
     <string name="exit_title">Exit</string>
@@ -41,4 +41,16 @@
     <string name="camera_title">Camera</string>
     <string name="photo_title">Photo</string>
     <string name="video_title">Video</string>
+    <string name="no_photos_yet">No photos yet</string>
+    <string name="no_videos_yet">No videos yet</string>
+    <string name="download_title">Download</string>
+    <string name="share_title">Share</string>
+
+    <string name="delete_title">Delete</string>
+    <string name="delete_description">Are you sure you want to delete selected items?</string>
+    <string name="success_delete">Deleted successfully</string>
+    <string name="instruction_title">Instruction</string>
+    <string name="ok_title">ok</string>
+
+    <string name="start_time">00:00</string>
 </resources>

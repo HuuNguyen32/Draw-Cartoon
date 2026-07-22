@@ -1,5 +1,7 @@
 package nhn.ntech.ndraw.presentation.category
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
@@ -8,10 +10,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import nhn.ntech.ndraw.BaseActivity
-import nhn.ntech.ndraw.R
+import nhn.ntech.ndraw.consts.Const
 import nhn.ntech.ndraw.databinding.ActivityCategoryBinding
 import nhn.ntech.ndraw.presentation.home.MainAdapter
 import nhn.ntech.ndraw.presentation.home.SpacingItemDecoration
+import nhn.ntech.ndraw.presentation.sketching.SketchingActivity
 import nhn.ntech.ndraw.utils.TransferUtils
 
 class CategoryActivity : BaseActivity() {
@@ -39,42 +42,24 @@ class CategoryActivity : BaseActivity() {
     }
 
     private fun setAdapters() {
-        val categories = listOf(
-            "Adventure Time",
-            "Tom & Jerry",
-            "Oggy & the Cockroaches",
-            "Anime",
-            "Comic",
-            "Manga",
-            "Cartoon"
-        )
+        val categories = assets.list(Const.FOLDER_ASSETS)?.toList() ?: emptyList()
 
-        val items = listOf(
-            R.drawable.trend_test_1,
-            R.drawable.trend_test_2,
-            R.drawable.trend_test,
-            R.drawable.trend_test,
-            R.drawable.trend_test,
-            R.drawable.trend_test_1,
-            R.drawable.trend_test_2,
-            R.drawable.trend_test,
-            R.drawable.trend_test,
-            R.drawable.trend_test,
-            R.drawable.trend_test_1,
-            R.drawable.trend_test_2,
-            R.drawable.trend_test,
-            R.drawable.trend_test_1,
-            R.drawable.trend_test_2,
-            R.drawable.trend_test
-        )
+        val items = assets.list(Const.getAssetsPath(categories[0]))
+            ?.sorted()
+            ?.map { "${Const.getAssetsPath(categories[0])}/$it" }
+            ?: emptyList()
 
         categoryAdapter = CategoryAdapter(categories = categories) { category ->
-
+            val imgList = assets.list(Const.getAssetsPath(category))
+                ?.sorted()
+                ?.map { "${Const.getAssetsPath(category)}/$it" }
+                ?: emptyList()
+            itemAdapter.updateData(imgList)
         }
         categoryAdapter.setSelectedPosition(0)
 
         itemAdapter = MainAdapter(items = items) { item ->
-
+            handleImageUri(item)
         }
 
         with(binding) {
@@ -106,6 +91,12 @@ class CategoryActivity : BaseActivity() {
             }
 
         }
+    }
+
+    private fun handleImageUri(uri: Uri) {
+        val intent = Intent(this, SketchingActivity::class.java)
+        intent.putExtra(Const.IMAGE_URI_TAG, uri.toString())
+        startActivity(intent)
     }
 
     private fun setPaddingScreen() {

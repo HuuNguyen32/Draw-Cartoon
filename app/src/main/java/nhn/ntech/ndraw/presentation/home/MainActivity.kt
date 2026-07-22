@@ -11,18 +11,20 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import kotlinx.coroutines.launch
 import nhn.ntech.ndraw.BaseActivity
-import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.consts.Const
 import nhn.ntech.ndraw.databinding.ActivityMainBinding
 import nhn.ntech.ndraw.presentation.category.CategoryActivity
 import nhn.ntech.ndraw.presentation.setting.SettingActivity
 import nhn.ntech.ndraw.presentation.sketching.SketchingActivity
+import nhn.ntech.ndraw.presentation.work.MyWorkActivity
 import nhn.ntech.ndraw.utils.DialogUtils
 
 class MainActivity : BaseActivity() {
@@ -59,13 +61,36 @@ class MainActivity : BaseActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setPaddingScreen()
+        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         setAdapter()
         setOnClickListener()
+        observeState()
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadData(assets)
+    }
+
+    private fun observeState() {
+        lifecycleScope.launch {
+            viewModel.uiState.collect { state ->
+                render(state)
+            }
+        }
+    }
+
+    private fun render(state: MainUIState) = with(binding) {
+        adapter.updateData(state.trendingList)
     }
 
     private fun setOnClickListener() {
         with(binding) {
+            btnI.setOnClickListener {
+                DialogUtils.createInstructionDialog(this@MainActivity)
+            }
+
             btnSetting.setOnClickListener {
                 startActivity(Intent(this@MainActivity, SettingActivity::class.java))
             }
@@ -85,30 +110,16 @@ class MainActivity : BaseActivity() {
             btnCategory.setOnClickListener {
                 startActivity(Intent(this@MainActivity, CategoryActivity::class.java))
             }
+
+            btnMyWork.setOnClickListener {
+                startActivity(Intent(this@MainActivity, MyWorkActivity::class.java))
+            }
         }
     }
 
     private fun setAdapter() {
-        val items = listOf(
-            R.drawable.trend_test_1,
-            R.drawable.trend_test_2,
-            R.drawable.trend_test,
-            R.drawable.trend_test,
-            R.drawable.trend_test,
-            R.drawable.trend_test_1,
-            R.drawable.trend_test_2,
-            R.drawable.trend_test,
-            R.drawable.trend_test,
-            R.drawable.trend_test,
-            R.drawable.trend_test_1,
-            R.drawable.trend_test_2,
-            R.drawable.trend_test,
-            R.drawable.trend_test_1,
-            R.drawable.trend_test_2,
-            R.drawable.trend_test
-        )
-        adapter = MainAdapter(items) {
-
+        adapter = MainAdapter(emptyList()) { item ->
+            handleImageUri(item)
         }
         binding.trendingRecyclerView.layoutManager =
             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL).apply {
