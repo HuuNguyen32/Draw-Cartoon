@@ -153,6 +153,7 @@ class DialogUtils {
                 override fun onPlaybackStateChanged(playbackState: Int) {
                     if (playbackState == Player.STATE_READY) {
                         val duration = exoPlayerHelper.getDuration()
+                        if (exoPlayerHelper.isPlaying()) binding.btnPlay.visibility = View.GONE
                         if (duration != C.TIME_UNSET) {
                             binding.sbVideo.max = duration.toInt()
                             handler.removeCallbacks(updateProgressRunnable)
@@ -172,7 +173,7 @@ class DialogUtils {
                         btnPlay.visibility = View.VISIBLE
                         exoPlayerHelper.pause()
                     } else {
-                        if (exoPlayerHelper.getPLayer()?.playbackState == Player.STATE_ENDED) {
+                        if (exoPlayerHelper.getPLayer()?.playbackState == Player.STATE_ENDED || sbVideo.progress == sbVideo.max) {
                             exoPlayerHelper.seekTo(0)
                         }
                         btnPlay.visibility = View.GONE
