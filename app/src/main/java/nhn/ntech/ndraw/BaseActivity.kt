@@ -2,6 +2,7 @@ package nhn.ntech.ndraw
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -21,6 +22,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {

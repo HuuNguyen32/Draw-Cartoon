@@ -1,9 +1,7 @@
 package nhn.ntech.ndraw.presentation.home
 
-import android.Manifest
 import android.content.ContentValues
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -11,7 +9,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
@@ -26,6 +23,7 @@ import nhn.ntech.ndraw.presentation.setting.SettingActivity
 import nhn.ntech.ndraw.presentation.sketching.SketchingActivity
 import nhn.ntech.ndraw.presentation.work.MyWorkActivity
 import nhn.ntech.ndraw.utils.DialogUtils
+import nhn.ntech.ndraw.helper.PermissionManager
 
 class MainActivity : BaseActivity() {
 
@@ -33,13 +31,30 @@ class MainActivity : BaseActivity() {
     private lateinit var adapter: MainAdapter
     private lateinit var viewModel: MainViewModel
     private var photoUri: Uri? = null
+    private var pendingItemUri: Uri? = null
 
     private val cameraPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
-                openCamera()
+                val targetUri = pendingItemUri
+                pendingItemUri = null
+                if (targetUri != null) {
+                    handleImageUri(targetUri)
+                } else {
+                    openCamera()
+                }
             } else {
-                Toast.makeText(this, "Camera permission is required", Toast.LENGTH_SHORT).show()
+                pendingItemUri = null
+                Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+    private val mediaPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                openGallery()
+            } else {
+                Toast.makeText(this, "Media permission denied", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -65,11 +80,6 @@ class MainActivity : BaseActivity() {
         setAdapter()
         setOnClickListener()
         observeState()
-
-    }
-
-    override fun onResume() {
-        super.onResume()
         viewModel.loadData(assets)
     }
 
@@ -99,10 +109,11 @@ class MainActivity : BaseActivity() {
                 DialogUtils.createDrawDialog(
                     this@MainActivity,
                     fromCamera = {
+                        pendingItemUri = null
                         checkCameraPermissionAndOpen()
                     },
                     fromGallery = {
-                        galleryLauncher.launch("image/*")
+                        checkMediaPermissionAndOpen()
                     }
                 )
             }
@@ -119,23 +130,34 @@ class MainActivity : BaseActivity() {
 
     private fun setAdapter() {
         adapter = MainAdapter(emptyList()) { item ->
-            handleImageUri(item)
+            checkCameraPermission(item)
         }
         binding.trendingRecyclerView.layoutManager =
             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL).apply {
-                gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
+                gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
             }
         binding.trendingRecyclerView.adapter = adapter
+        binding.trendingRecyclerView.setHasFixedSize(true)
     }
 
     private fun checkCameraPermissionAndOpen() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-            == PackageManager.PERMISSION_GRANTED
-        ) {
-            openCamera()
-        } else {
-            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
-        }
+        PermissionManager.checkCameraPermission(
+            activity = this,
+            onGranted = { openCamera() },
+            onLaunchLauncher = { cameraPermissionLauncher.launch(PermissionManager.cameraPermission) }
+        )
+    }
+
+    private fun checkMediaPermissionAndOpen() {
+        PermissionManager.checkMediaPermission(
+            activity = this,
+            onGranted = { openGallery() },
+            onLaunchLauncher = { mediaPermissionLauncher.launch(PermissionManager.photoPermission) }
+        )
+    }
+
+    private fun openGallery() {
+        galleryLauncher.launch("image/*")
     }
 
     private fun openCamera() {
@@ -161,5 +183,19 @@ class MainActivity : BaseActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
+    }
+
+    private fun checkCameraPermission(item: Uri) {
+        pendingItemUri = item
+        PermissionManager.checkCameraPermission(
+            activity = this,
+            onGranted = {
+                pendingItemUri = null
+                handleImageUri(item)
+            },
+            onLaunchLauncher = {
+                cameraPermissionLauncher.launch(PermissionManager.cameraPermission)
+            }
+        )
     }
 }

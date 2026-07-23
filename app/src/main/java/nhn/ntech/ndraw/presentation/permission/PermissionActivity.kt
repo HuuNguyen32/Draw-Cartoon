@@ -9,12 +9,8 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
@@ -25,8 +21,10 @@ import nhn.ntech.ndraw.BaseActivity
 import nhn.ntech.ndraw.presentation.home.MainActivity
 import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.databinding.ActivityPermissionBinding
-import nhn.ntech.ndraw.utils.setTextColor
-import nhn.ntech.ndraw.utils.setTextGradientColor
+import nhn.ntech.ndraw.ext.setTextColor
+import nhn.ntech.ndraw.ext.setTextGradientColor
+
+import nhn.ntech.ndraw.helper.PermissionManager
 
 class PermissionActivity : BaseActivity() {
 
@@ -38,14 +36,8 @@ class PermissionActivity : BaseActivity() {
         private const val REQUEST_CAMERA_PERMISSION = 200
     }
 
-    private var denyCount = 0
-    private var isHasMediaPermission = false
-    private val photoPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        Manifest.permission.READ_MEDIA_IMAGES
-    } else {
-        Manifest.permission.READ_EXTERNAL_STORAGE
-    }
-    private val cameraPermission = Manifest.permission.CAMERA
+    private val photoPermission = PermissionManager.photoPermission
+    private val cameraPermission = PermissionManager.cameraPermission
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +55,7 @@ class PermissionActivity : BaseActivity() {
         super.onResume()
         val isPhotoPermissionGranted = requestCheckPermission(photoPermission)
         val isCameraPermissionGranted = requestCheckPermission(cameraPermission)
+
         binding.switchPermission.isChecked = isPhotoPermissionGranted
         viewModel.setPermissionGranted(isPhotoPermissionGranted)
         binding.cameraSwitchPermission.isChecked = isCameraPermissionGranted
@@ -71,11 +64,37 @@ class PermissionActivity : BaseActivity() {
 
     private fun setUpListeners() {
         binding.permissionSwitchContainer.setOnClickListener {
-            requestMediaPermission(photoPermission, REQUEST_MEDIA_PERMISSION)
+            PermissionManager.checkMediaPermission(
+                activity = this,
+                onGranted = {
+                    binding.switchPermission.isChecked = true
+                    viewModel.setPermissionGranted(true)
+                },
+                onLaunchLauncher = {
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(photoPermission),
+                        REQUEST_MEDIA_PERMISSION
+                    )
+                }
+            )
         }
 
         binding.cameraPermissionSwitchContainer.setOnClickListener {
-            requestMediaPermission(cameraPermission, REQUEST_CAMERA_PERMISSION)
+            PermissionManager.checkCameraPermission(
+                activity = this,
+                onGranted = {
+                    binding.cameraSwitchPermission.isChecked = true
+                    viewModel.setCameraPermissionGranted(true)
+                },
+                onLaunchLauncher = {
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(cameraPermission),
+                        REQUEST_CAMERA_PERMISSION
+                    )
+                }
+            )
         }
 
         binding.btnContinue.setOnClickListener {
@@ -106,42 +125,11 @@ class PermissionActivity : BaseActivity() {
 
     private fun observeState() {
         viewModel.isPermissionGranted.observe(this) { isPermissionGranted ->
-            isHasMediaPermission = isPermissionGranted
+
         }
 
         viewModel.isCameraPermissionGranted.observe(this) { isCameraPermissionGranted ->
 
-        }
-    }
-
-    private fun requestMediaPermission(permission: String, requestCode: Int) {
-        val isPermissionGranted = ContextCompat.checkSelfPermission(
-            this,
-            permission
-        ) == PackageManager.PERMISSION_GRANTED
-        if (!isPermissionGranted) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(permission),
-                    requestCode
-                )
-            } else {
-                if (denyCount == 2) {
-                    Toast.makeText(
-                        this,
-                        "Please enable permissions in Settings",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    goToSetting()
-                } else {
-                    ActivityCompat.requestPermissions(
-                        this,
-                        arrayOf(permission),
-                        requestCode
-                    )
-                }
-            }
         }
     }
 
@@ -164,11 +152,9 @@ class PermissionActivity : BaseActivity() {
                 binding.switchPermission.isChecked = true
                 viewModel.setPermissionGranted(true)
             } else {
-                denyCount++
                 Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
                 binding.switchPermission.isChecked = false
                 viewModel.setPermissionGranted(false)
-                if (denyCount == 2) goToSetting()
             }
         }
 
@@ -178,20 +164,11 @@ class PermissionActivity : BaseActivity() {
                 binding.cameraSwitchPermission.isChecked = true
                 viewModel.setCameraPermissionGranted(true)
             } else {
-                denyCount++
                 Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
                 binding.cameraSwitchPermission.isChecked = false
                 viewModel.setCameraPermissionGranted(false)
-                if (denyCount == 2) goToSetting()
             }
         }
-    }
-
-    private fun goToSetting() {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-            data = Uri.fromParts("package", packageName, null)
-        }
-        startActivity(intent)
     }
 
     private fun setPaddingScreen() {

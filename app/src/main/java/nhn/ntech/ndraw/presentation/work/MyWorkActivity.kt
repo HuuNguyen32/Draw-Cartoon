@@ -13,6 +13,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import kotlinx.coroutines.launch
 import nhn.ntech.ndraw.BaseActivity
@@ -22,12 +23,13 @@ import nhn.ntech.ndraw.databinding.ActivityMyWorkBinding
 import nhn.ntech.ndraw.databinding.CustomPopupBinding
 import nhn.ntech.ndraw.presentation.detail.DetailWorkActivity
 import nhn.ntech.ndraw.utils.DialogUtils
+import nhn.ntech.ndraw.utils.MediaUtils
 import java.io.File
 
 class MyWorkActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMyWorkBinding
-    private lateinit var adapter: MyWorkAdapter
+    private lateinit var myWorkAdapter: MyWorkAdapter
     private lateinit var viewModel: MyWorkViewModel
     private var isPhotoSelected = true
 
@@ -43,6 +45,11 @@ class MyWorkActivity : BaseActivity() {
         observeState()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshData(filesDir)
+    }
+
     private fun observeState() {
         lifecycleScope.launch {
             viewModel.uiState.collect { state ->
@@ -52,7 +59,7 @@ class MyWorkActivity : BaseActivity() {
     }
 
     private fun render(state: MyWorkUIState) = with(binding) {
-        if (!::adapter.isInitialized) return@with
+        if (!::myWorkAdapter.isInitialized) return@with
 
         val isPhoto = state.isCateMode == CateMode.PHOTO
 
@@ -60,7 +67,7 @@ class MyWorkActivity : BaseActivity() {
 
         val currentList = if (isPhoto) state.listFile else state.listVideo
 
-        adapter.updateData(currentList)
+        myWorkAdapter.updateData(currentList)
 
         updateTabUI(isPhoto)
 
@@ -115,11 +122,6 @@ class MyWorkActivity : BaseActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.refreshData(filesDir)
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     private fun setOnListener() = with(binding) {
         btnCatePhoto.setOnClickListener {
@@ -138,14 +140,14 @@ class MyWorkActivity : BaseActivity() {
         }
 
         btnSelectMore.setOnClickListener {
-            if (::adapter.isInitialized) {
-                adapter.selectAll()
+            if (::myWorkAdapter.isInitialized) {
+                myWorkAdapter.selectAll()
             }
         }
 
         btnDelete.setOnClickListener {
-            if (::adapter.isInitialized) {
-                val selectedFiles = adapter.getSelectedItems()
+            if (::myWorkAdapter.isInitialized) {
+                val selectedFiles = myWorkAdapter.getSelectedItems()
                 if (selectedFiles.isEmpty()) return@setOnClickListener
                 confirmAndDeleteFiles(selectedFiles)
             }
@@ -157,10 +159,10 @@ class MyWorkActivity : BaseActivity() {
 
         rvMyWork.setOnTouchListener { _, event ->
             if (event.action == android.view.MotionEvent.ACTION_UP) {
-                if (::adapter.isInitialized && adapter.isSelectionMode) {
+                if (::myWorkAdapter.isInitialized && myWorkAdapter.isSelectionMode) {
                     val child = rvMyWork.findChildViewUnder(event.x, event.y)
                     if (child == null) {
-                        adapter.exitSelectionMode()
+                        myWorkAdapter.exitSelectionMode()
                     }
                 }
             }
@@ -168,16 +170,38 @@ class MyWorkActivity : BaseActivity() {
         }
 
         btnDownload.setOnClickListener {
-            Toast.makeText(this@MyWorkActivity, "Download", Toast.LENGTH_SHORT).show()
+            if (::myWorkAdapter.isInitialized) {
+                val selectedFiles = myWorkAdapter.getSelectedItems()
+                if (selectedFiles.isEmpty()) return@setOnClickListener
+                lifecycleScope.launch {
+                    var successCount = 0
+                    for (file in selectedFiles) {
+                        val success = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+                            MediaUtils.saveToGallery(this@MyWorkActivity, file, isPhotoSelected)
+                        }
+                        if (success) successCount++
+                    }
+                    Toast.makeText(
+                        this@MyWorkActivity,
+                        if (successCount > 0) getString(R.string.download_success)
+                        else getString(R.string.download_failed),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
         }
 
         btnShare.setOnClickListener {
-            Toast.makeText(this@MyWorkActivity, "Share", Toast.LENGTH_SHORT).show()
+            if (::myWorkAdapter.isInitialized) {
+                val selectedFiles = myWorkAdapter.getSelectedItems()
+                if (selectedFiles.isEmpty()) return@setOnClickListener
+                MediaUtils.shareFiles(this@MyWorkActivity, selectedFiles, isPhotoSelected)
+            }
         }
     }
 
     private fun initView() {
-        adapter = MyWorkAdapter(
+        myWorkAdapter = MyWorkAdapter(
             emptyList(),
             onItemClick = { file ->
                 val intent = Intent(this@MyWorkActivity, DetailWorkActivity::class.java)
@@ -195,11 +219,12 @@ class MyWorkActivity : BaseActivity() {
 
             }
         )
-        binding.rvMyWork.layoutManager =
-            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL).apply {
-                gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
-            }
-        binding.rvMyWork.adapter = adapter
+        binding.rvMyWork.apply {
+            layoutManager = GridLayoutManager(this@MyWorkActivity, 2)
+            adapter = myWorkAdapter
+            setHasFixedSize(true)
+            itemAnimator = null
+        }
     }
 
     private fun updateSelectionUI(isSelectionMode: Boolean) {
@@ -225,7 +250,7 @@ class MyWorkActivity : BaseActivity() {
     }
 
     private fun exitFromSelectMode() {
-        if (::adapter.isInitialized && adapter.isSelectionMode) adapter.exitSelectionMode()
+        if (::myWorkAdapter.isInitialized && myWorkAdapter.isSelectionMode) myWorkAdapter.exitSelectionMode()
     }
 
     private fun setPopUp(file: File, view: View) {
@@ -246,13 +271,24 @@ class MyWorkActivity : BaseActivity() {
 
         popupWindow.showAsDropDown(view, -xOff, 10)
         popupWindow.isOutsideTouchable = true
+
         with(popupBinding) {
             tvDownload.setOnClickListener {
-                Toast.makeText(this@MyWorkActivity, "Download", Toast.LENGTH_SHORT).show()
+                lifecycleScope.launch {
+                    val success = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+                        MediaUtils.saveToGallery(this@MyWorkActivity, file, isPhotoSelected)
+                    }
+                    Toast.makeText(
+                        this@MyWorkActivity,
+                        if (success) getString(R.string.download_success)
+                        else getString(R.string.download_failed),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
                 popupWindow.dismiss()
             }
             tvShare.setOnClickListener {
-                Toast.makeText(this@MyWorkActivity, "Share", Toast.LENGTH_SHORT).show()
+                MediaUtils.shareFile(this@MyWorkActivity, file, isPhotoSelected)
                 popupWindow.dismiss()
             }
             tvDelete.setOnClickListener {

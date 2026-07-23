@@ -9,13 +9,14 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import nhn.ntech.ndraw.BaseActivity
 import nhn.ntech.ndraw.consts.Const
 import nhn.ntech.ndraw.databinding.ActivityLanguageBinding
 import nhn.ntech.ndraw.domain.prefs.UserPreferences
 import nhn.ntech.ndraw.presentation.Intro.IntroActivity
 import nhn.ntech.ndraw.presentation.home.MainActivity
 
-class LanguageActivity : AppCompatActivity() {
+class LanguageActivity : BaseActivity() {
 
     private lateinit var binding: ActivityLanguageBinding
     private lateinit var adapter: LanguageAdapter

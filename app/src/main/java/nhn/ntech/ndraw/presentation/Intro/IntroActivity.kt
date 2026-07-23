@@ -1,14 +1,10 @@
 package nhn.ntech.ndraw.presentation.Intro
 
 import android.content.Intent
-import android.graphics.LinearGradient
-import android.graphics.Shader
 import android.os.Bundle
-import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 import androidx.core.view.ViewCompat
@@ -21,7 +17,7 @@ import nhn.ntech.ndraw.databinding.ActivityIntroBinding
 import nhn.ntech.ndraw.domain.prefs.UserPreferences
 import nhn.ntech.ndraw.presentation.home.MainActivity
 import nhn.ntech.ndraw.presentation.permission.PermissionActivity
-import nhn.ntech.ndraw.utils.setTextGradientColor
+import nhn.ntech.ndraw.ext.setTextGradientColor
 
 class IntroActivity : BaseActivity() {
 

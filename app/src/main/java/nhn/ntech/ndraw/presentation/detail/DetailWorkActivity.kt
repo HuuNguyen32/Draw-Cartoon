@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
@@ -22,6 +23,8 @@ import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.consts.Const
 import nhn.ntech.ndraw.databinding.ActivityDetailWorkBinding
 import nhn.ntech.ndraw.helper.ExoPlayerHelper
+import nhn.ntech.ndraw.utils.DialogUtils
+import nhn.ntech.ndraw.utils.MediaUtils
 import nhn.ntech.ndraw.utils.TransferUtils
 import java.io.File
 
@@ -78,6 +81,31 @@ class DetailWorkActivity : BaseActivity() {
     private fun setOnListener() {
         with(binding) {
             btnBack.setOnClickListener { finish() }
+
+            btnDelete.setOnClickListener {
+                confirmAndDeleteFile()
+            }
+
+            btnDownload.setOnClickListener {
+                val currentFile = file ?: return@setOnClickListener
+                lifecycleScope.launch {
+                    val success = withContext(Dispatchers.IO) {
+                        MediaUtils.saveToGallery(this@DetailWorkActivity, currentFile, isPhoto)
+                    }
+                    Toast.makeText(
+                        this@DetailWorkActivity,
+                        if (success) getString(R.string.download_success)
+                        else getString(R.string.download_failed),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+            btnShare.setOnClickListener {
+                val currentFile = file ?: return@setOnClickListener
+                MediaUtils.shareFile(this@DetailWorkActivity, currentFile, isPhoto)
+            }
+
             btnPlay.setOnClickListener {
                 if (exoPlayerHelper.isPlaying()) {
                     btnPlay.setImageResource(R.drawable.ic_gradient_play)
@@ -182,10 +210,28 @@ class DetailWorkActivity : BaseActivity() {
         exoPlayerHelper.release()
     }
 
+    private fun confirmAndDeleteFile() {
+        DialogUtils.createConfirmDialog(
+            this@DetailWorkActivity,
+            getString(R.string.delete_title),
+            getString(R.string.delete_description),
+            onConfirm = {
+                viewModel.deleteFile(file ?: return@createConfirmDialog) {
+                    Toast.makeText(
+                        this@DetailWorkActivity,
+                        getString(R.string.success_delete),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    finish()
+                }
+            }
+        )
+    }
+
     private fun setPaddingScreen() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
     }

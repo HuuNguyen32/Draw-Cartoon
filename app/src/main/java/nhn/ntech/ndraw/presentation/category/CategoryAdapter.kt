@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.databinding.CategoryItemBinding
+import nhn.ntech.ndraw.ext.capitalizeFirst
 
 class CategoryAdapter(
     private var categories: List<String>,
@@ -28,7 +29,7 @@ class CategoryAdapter(
         position: Int,
     ) {
         val category = categories[position]
-        holder.binding.tvCategory.text = category
+        holder.binding.tvCategory.text = category.capitalizeFirst()
         if (selectedPosition == position) {
             holder.binding.tvCategory.setTextColor(
                 ContextCompat.getColor(
@@ -68,7 +69,7 @@ class CategoryAdapter(
 
     fun updateData(newListData: List<String>) {
         categories = newListData
-        notifyItemRangeChanged(0, itemCount)
+        notifyDataSetChanged()
     }
 
     fun setSelectedPosition(position: Int) {

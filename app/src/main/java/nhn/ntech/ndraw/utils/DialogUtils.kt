@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.SeekBar
@@ -18,6 +17,7 @@ import nhn.ntech.ndraw.databinding.ConfirmDialogBinding
 import nhn.ntech.ndraw.databinding.DoubleButtonDialogBinding
 import nhn.ntech.ndraw.databinding.InstructionDialogBinding
 import nhn.ntech.ndraw.databinding.RateDialogBinding
+import nhn.ntech.ndraw.ext.setTextGradientColor
 import nhn.ntech.ndraw.helper.ExoPlayerHelper
 
 class DialogUtils {
@@ -168,7 +168,7 @@ class DialogUtils {
             })
 
             with(binding) {
-                root.setOnClickListener {
+                cvPlayer.setOnClickListener {
                     if (exoPlayerHelper.isPlaying()) {
                         btnPlay.visibility = View.VISIBLE
                         exoPlayerHelper.pause()

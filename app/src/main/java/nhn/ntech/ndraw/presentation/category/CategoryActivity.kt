@@ -7,8 +7,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import nhn.ntech.ndraw.BaseActivity
 import nhn.ntech.ndraw.consts.Const
 import nhn.ntech.ndraw.databinding.ActivityCategoryBinding
@@ -17,12 +21,31 @@ import nhn.ntech.ndraw.presentation.home.SpacingItemDecoration
 import nhn.ntech.ndraw.presentation.sketching.SketchingActivity
 import nhn.ntech.ndraw.utils.TransferUtils
 
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import nhn.ntech.ndraw.helper.PermissionManager
+
 class CategoryActivity : BaseActivity() {
 
     private lateinit var binding: ActivityCategoryBinding
     private lateinit var viewModel: CategoryViewModel
     private lateinit var categoryAdapter: CategoryAdapter
     private lateinit var itemAdapter: MainAdapter
+    private var pendingItemUri: Uri? = null
+
+    private val cameraPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                val targetUri = pendingItemUri
+                pendingItemUri = null
+                if (targetUri != null) {
+                    handleImageUri(targetUri)
+                }
+            } else {
+                pendingItemUri = null
+                Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show()
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,24 +65,12 @@ class CategoryActivity : BaseActivity() {
     }
 
     private fun setAdapters() {
-        val categories = assets.list(Const.FOLDER_ASSETS)?.toList() ?: emptyList()
-
-        val items = assets.list(Const.getAssetsPath(categories[0]))
-            ?.sorted()
-            ?.map { "${Const.getAssetsPath(categories[0])}/$it" }
-            ?: emptyList()
-
-        categoryAdapter = CategoryAdapter(categories = categories) { category ->
-            val imgList = assets.list(Const.getAssetsPath(category))
-                ?.sorted()
-                ?.map { "${Const.getAssetsPath(category)}/$it" }
-                ?: emptyList()
-            itemAdapter.updateData(imgList)
+        itemAdapter = MainAdapter(items = emptyList()) { item ->
+            checkCameraPermission(item)
         }
-        categoryAdapter.setSelectedPosition(0)
 
-        itemAdapter = MainAdapter(items = items) { item ->
-            handleImageUri(item)
+        categoryAdapter = CategoryAdapter(categories = emptyList()) { category ->
+            loadCategoryItems(category)
         }
 
         with(binding) {
@@ -84,12 +95,40 @@ class CategoryActivity : BaseActivity() {
             listRecyclerView.apply {
                 layoutManager =
                     StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL).apply {
-                        gapStrategy =
-                            StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
+                        gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
                     }
                 adapter = itemAdapter
+                setHasFixedSize(true)
             }
+        }
 
+        lifecycleScope.launch(Dispatchers.IO) {
+            val categories = assets.list(Const.FOLDER_ASSETS)?.toList() ?: emptyList()
+            val firstCategory = categories.getOrNull(0) ?: ""
+            val items = if (firstCategory.isNotEmpty()) {
+                assets.list(Const.getAssetsPath(firstCategory))
+                    ?.sorted()
+                    ?.map { "${Const.getAssetsPath(firstCategory)}/$it" }
+                    ?: emptyList()
+            } else emptyList()
+
+            withContext(Dispatchers.Main) {
+                categoryAdapter.updateData(categories)
+                categoryAdapter.setSelectedPosition(0)
+                itemAdapter.updateData(items)
+            }
+        }
+    }
+
+    private fun loadCategoryItems(category: String) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val imgList = assets.list(Const.getAssetsPath(category))
+                ?.sorted()
+                ?.map { "${Const.getAssetsPath(category)}/$it" }
+                ?: emptyList()
+            withContext(Dispatchers.Main) {
+                itemAdapter.updateData(imgList)
+            }
         }
     }
 
@@ -97,6 +136,20 @@ class CategoryActivity : BaseActivity() {
         val intent = Intent(this, SketchingActivity::class.java)
         intent.putExtra(Const.IMAGE_URI_TAG, uri.toString())
         startActivity(intent)
+    }
+
+    private fun checkCameraPermission(item: Uri) {
+        pendingItemUri = item
+        PermissionManager.checkCameraPermission(
+            activity = this,
+            onGranted = {
+                pendingItemUri = null
+                handleImageUri(item)
+            },
+            onLaunchLauncher = {
+                cameraPermissionLauncher.launch(PermissionManager.cameraPermission)
+            }
+        )
     }
 
     private fun setPaddingScreen() {

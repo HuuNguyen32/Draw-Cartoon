@@ -1,4 +1,4 @@
-package nhn.ntech.ndraw.utils
+package nhn.ntech.ndraw.ext
 
 import android.content.Context
 import android.graphics.LinearGradient

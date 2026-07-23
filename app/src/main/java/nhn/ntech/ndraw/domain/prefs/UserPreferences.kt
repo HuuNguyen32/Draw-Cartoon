@@ -24,4 +24,20 @@ class UserPreferences(context: Context) {
     fun getPermissionScreenVisited(): Boolean {
         return sharedPreferences.getBoolean("permission_screen_visited", false)
     }
+
+    fun setCameraAskedBefore(asked: Boolean) {
+        editor.putBoolean("camera_asked_before", asked).apply()
+    }
+
+    fun isCameraAskedBefore(): Boolean {
+        return sharedPreferences.getBoolean("camera_asked_before", false)
+    }
+
+    fun setMediaAskedBefore(asked: Boolean) {
+        editor.putBoolean("media_asked_before", asked).apply()
+    }
+
+    fun isMediaAskedBefore(): Boolean {
+        return sharedPreferences.getBoolean("media_asked_before", false)
+    }
 }

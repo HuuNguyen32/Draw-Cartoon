@@ -1,4 +1,4 @@
-package nhn.ntech.ndraw.utils
+package nhn.ntech.ndraw.ext
 
 import android.app.Activity
 import android.content.Intent

@@ -36,6 +36,9 @@ class MyWorkAdapter(
 
     override fun onBindViewHolder(holder: MyWorkViewHolder, position: Int) {
         val file = items[position]
+        val isVideo = file.extension.lowercase() in listOf("mp4", "mkv", "avi", "3gp", "webm")
+        holder.binding.ivPlay.visibility = if (isVideo) View.VISIBLE else View.GONE
+
         Glide.with(holder.itemView.context)
             .load(file)
             .into(holder.binding.ivMyWork)

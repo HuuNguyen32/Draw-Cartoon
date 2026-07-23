@@ -17,51 +17,32 @@ class MyWorkViewModel : ViewModel() {
     val uiState: StateFlow<MyWorkUIState> = _uiState.asStateFlow()
 
     fun updateCateMode(cateMode: CateMode, filesDir: File) {
-        _uiState.update { state ->
-            state.copy(isCateMode = cateMode)
-        }
-        refreshData(filesDir)
-    }
-
-    fun loadListFile(filesDir: File) {
         viewModelScope.launch {
-            val photos = withContext(Dispatchers.IO) {
+            val list = withContext(Dispatchers.IO) {
                 val dir = File(filesDir, Const.MY_WORKS_FOLDER)
                 if (dir.exists()) {
-                    dir.listFiles { file -> file.extension in listOf("jpg", "jpeg", "png", "webp") }
-                        ?.sortedByDescending { it.lastModified() }
-                        ?: emptyList()
-                } else {
-                    emptyList()
-                }
-            }
-            _uiState.update { state ->
-                state.copy(listFile = photos)
-            }
-        }
-    }
-
-    fun loadListVideo(filesDir: File) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val videos = withContext(Dispatchers.IO) {
-                val dir = File(filesDir, Const.MY_WORKS_FOLDER)
-                if (dir.exists()) {
-                    dir.listFiles { file -> file.extension in listOf("mp4", "mkv", "avi") }
+                    val extensions = if (cateMode == CateMode.PHOTO) {
+                        listOf("jpg", "jpeg", "png", "webp")
+                    } else {
+                        listOf("mp4", "mkv", "avi")
+                    }
+                    dir.listFiles { file -> file.extension in extensions }
                         ?.sortedByDescending { it.lastModified() }
                         ?: emptyList()
                 } else emptyList()
             }
             _uiState.update { state ->
-                state.copy(listVideo = videos)
+                if (cateMode == CateMode.PHOTO) {
+                    state.copy(isCateMode = cateMode, listFile = list)
+                } else {
+                    state.copy(isCateMode = cateMode, listVideo = list)
+                }
             }
         }
     }
 
     fun refreshData(filesDir: File) {
-        when (uiState.value.isCateMode) {
-            CateMode.PHOTO -> loadListFile(filesDir)
-            CateMode.VIDEO -> loadListVideo(filesDir)
-        }
+        updateCateMode(uiState.value.isCateMode, filesDir)
     }
 
     fun deleteFiles(filesToDelete: List<File>, filesDir: File, onCompletion: () -> Unit) {

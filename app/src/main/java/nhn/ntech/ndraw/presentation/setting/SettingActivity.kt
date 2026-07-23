@@ -12,9 +12,9 @@ import nhn.ntech.ndraw.consts.Const
 import nhn.ntech.ndraw.databinding.ActivitySettingBinding
 import nhn.ntech.ndraw.presentation.language.LanguageActivity
 import nhn.ntech.ndraw.utils.DialogUtils
-import nhn.ntech.ndraw.utils.policy
-import nhn.ntech.ndraw.utils.reviewApp
-import nhn.ntech.ndraw.utils.shareApp
+import nhn.ntech.ndraw.ext.policy
+import nhn.ntech.ndraw.ext.reviewApp
+import nhn.ntech.ndraw.ext.shareApp
 
 class SettingActivity : BaseActivity() {
 

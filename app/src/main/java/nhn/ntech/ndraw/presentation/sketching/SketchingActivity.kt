@@ -26,7 +26,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import nhn.ntech.ndraw.consts.Const
 import nhn.ntech.ndraw.databinding.ActivitySketchingBinding
-import nhn.ntech.ndraw.utils.setTextGradientColor
+import nhn.ntech.ndraw.ext.setTextGradientColor
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
 import nhn.ntech.ndraw.BaseActivity
 import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.utils.DialogUtils
-import nhn.ntech.ndraw.utils.clearTextShader
+import nhn.ntech.ndraw.ext.clearTextShader
 import java.io.File
 
 class SketchingActivity : BaseActivity() {
