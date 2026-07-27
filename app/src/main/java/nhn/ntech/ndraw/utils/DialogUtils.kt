@@ -107,15 +107,20 @@ class DialogUtils {
             context: Context,
             title: String,
             des: String,
+            positiveButton: String = context.getString(R.string.ok_title),
+            negativeButton: String = context.getString(R.string.no_title),
             onConfirm: () -> Unit,
         ) {
             val dialog = Dialog(context)
             val binding = ConfirmDialogBinding.inflate(LayoutInflater.from(context))
             dialog.setContentView(binding.root)
             dialog.window?.setBackgroundDrawableResource(R.drawable.white_bg)
+            dialog.setCanceledOnTouchOutside(false)
             with(binding) {
                 tvTitle.text = title
                 tvDes.text = des
+                btnYes.text = positiveButton
+                btnNo.text = negativeButton
                 btnNo.setTextGradientColor()
                 btnNo.setOnClickListener {
                     dialog.dismiss()

@@ -45,7 +45,7 @@
         android:minHeight="38dp"
         android:paddingTop="10dp"
         android:paddingBottom="9dp"
-        android:text="No"
+        android:text="@string/no_title"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textStyle="bold"

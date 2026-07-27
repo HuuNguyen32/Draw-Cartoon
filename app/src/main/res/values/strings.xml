@@ -57,4 +57,24 @@
     <string name="download_success">Saved to gallery successfully</string>
     <string name="download_failed">Failed to save to gallery</string>
     <string name="share_failed">Unable to share this file</string>
+
+    <string name="media_permission_error_message">Media permission denied</string>
+    <string name="camera_permission_error_message">Camera permission denied</string>
+    <string name="no_internet_connected_message">You are offline. Please turn on Wi-Fi or mobile data to continue</string>
+    <string name="internet_connected_message">Internet connected</string>
+    <string name="create_image_fail_message">Could not create image file</string>
+    <string name="no_title">No</string>
+
+    <string name="no_internet_title">No internet connection</string>
+    <string name="open_settings_title">Open settings</string>
+    <string name="close_title">Close</string>
+    <string name="unable_load_image_title">Unable to load image</string>
+    <string name="unable_load_image_message">Please turn on Wi-Fi or mobile data to load the images</string>
+
+    <string name="saved_photo_title">Photo saved!</string>
+    <string name="saved_video_title">Video saved!</string>
+    <string name="saved_photo_des">Your photo has been successfully saved to My work. View it now</string>
+    <string name="saved_video_des">Your video has been successfully saved to My work. View it now</string>
+
+    <string name="view_title">View</string>
 </resources>

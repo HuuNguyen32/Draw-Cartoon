@@ -1,21 +1,21 @@
 package nhn.ntech.ndraw.presentation.home
 
-import android.net.Uri
-import android.util.Log
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.databinding.TrendingItemBinding
-import androidx.core.net.toUri
-import nhn.ntech.ndraw.consts.Const
 import nhn.ntech.ndraw.utils.TransferUtils
 
 class MainAdapter(
     private var items: List<String>,
-    private val onItemClick: (Uri) -> Unit,
+    private val onItemClick: (String, Boolean) -> Unit,
 ) : RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
 
     companion object {
@@ -23,6 +23,8 @@ class MainAdapter(
         private const val HEIGHT_MEDIUM_DP = 258
         private const val HEIGHT_LARGE_DP = 302
     }
+
+    private var isPhotoError = false
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -35,13 +37,13 @@ class MainAdapter(
 
     override fun onBindViewHolder(holder: MainAdapter.MainViewHolder, position: Int) {
         val item = items[position]
-        val path = "${Const.URL_ASSETS}${item}".toUri()
 
         val heightPx = when (position % 3) {
             0 -> {
                 val screenWidth = holder.itemView.context.resources.displayMetrics.widthPixels
                 screenWidth / 2 - TransferUtils.dpToPx(holder.itemView.context, 16)
             }
+
             else -> TransferUtils.dpToPx(holder.itemView.context, HEIGHT_MEDIUM_DP)
         }
 
@@ -50,11 +52,35 @@ class MainAdapter(
         }
 
         Glide.with(holder.itemView.context)
-            .load(path)
+            .load(item)
+            .listener(object : RequestListener<Drawable> {
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable?>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    isPhotoError = false
+                    return false
+                }
+
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable?>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    isPhotoError = true
+                    return true
+                }
+            })
+            .error(R.drawable.ic_image_error)
             .into(holder.binding.ivTrendItem)
 
+
         holder.binding.root.setOnClickListener {
-            onItemClick(path)
+            onItemClick(item, isPhotoError)
         }
     }
 

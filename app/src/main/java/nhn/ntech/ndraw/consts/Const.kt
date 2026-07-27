@@ -10,6 +10,9 @@ object Const {
     const val FLOW_SPLASH_CODE = 0
     const val FLOW_SETTING_CODE = 1
 
+    const val FROM_SKETCHING = "from_sketching"
+    const val IS_PHOTO_FROM_SKETCHING = "is_photo_from_sketching"
+
     const val FILE_TAG = "file_path"
     const val IS_PHOTO_TAG = "is_photo"
 

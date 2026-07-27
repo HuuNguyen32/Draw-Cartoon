@@ -5,25 +5,36 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import kotlinx.coroutines.launch
 import nhn.ntech.ndraw.BaseActivity
 import nhn.ntech.ndraw.consts.Const
+import nhn.ntech.ndraw.data.implemention.ItemRepositoryImpl
+import nhn.ntech.ndraw.data.local.AppDatabase
 import nhn.ntech.ndraw.databinding.ActivityMainBinding
+import nhn.ntech.ndraw.domain.state.UiState
 import nhn.ntech.ndraw.presentation.category.CategoryActivity
 import nhn.ntech.ndraw.presentation.setting.SettingActivity
 import nhn.ntech.ndraw.presentation.sketching.SketchingActivity
 import nhn.ntech.ndraw.presentation.work.MyWorkActivity
 import nhn.ntech.ndraw.utils.DialogUtils
 import nhn.ntech.ndraw.helper.PermissionManager
+
+import android.view.View
+import nhn.ntech.ndraw.R
+import nhn.ntech.ndraw.helper.NetworkObserver
 
 class MainActivity : BaseActivity() {
 
@@ -32,6 +43,8 @@ class MainActivity : BaseActivity() {
     private lateinit var viewModel: MainViewModel
     private var photoUri: Uri? = null
     private var pendingItemUri: Uri? = null
+    private val networkObserver by lazy { NetworkObserver.getNetworkObserver(this) }
+    private var wasNetworkLost: Boolean = false
 
     private val cameraPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -45,7 +58,11 @@ class MainActivity : BaseActivity() {
                 }
             } else {
                 pendingItemUri = null
-                Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    getString(R.string.camera_permission_error_message),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -54,7 +71,11 @@ class MainActivity : BaseActivity() {
             if (isGranted) {
                 openGallery()
             } else {
-                Toast.makeText(this, "Media permission denied", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    getString(R.string.media_permission_error_message),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -76,17 +97,85 @@ class MainActivity : BaseActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setPaddingScreen()
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        setViewModel()
         setAdapter()
         setOnClickListener()
         observeState()
-        viewModel.loadData(assets)
+        observeNetwork()
+        viewModel.fetchData()
+    }
+
+    private fun observeNetwork() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                networkObserver.isOnline.collect { isOnline ->
+                    if (isOnline) {
+                        if (wasNetworkLost) {
+                            wasNetworkLost = false
+                            Toast.makeText(
+                                this@MainActivity,
+                                getString(R.string.internet_connected_message),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        if (viewModel.uiState.value is UiState.Error) {
+                            viewModel.fetchData()
+                        }
+                    } else {
+                        if (networkObserver.shouldShowOfflineDialog()) {
+                            wasNetworkLost = true
+                            DialogUtils.createConfirmDialog(
+                                this@MainActivity,
+                                getString(R.string.no_internet_title),
+                                getString(R.string.no_internet_connected_message),
+                                getString(R.string.open_settings_title),
+                                getString(R.string.close_title),
+                                onConfirm = {
+                                    val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
+                                    startActivity(intent)
+                                })
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setViewModel() {
+        val db = AppDatabase.getDatabase(this)
+        val itemRepository = ItemRepositoryImpl(db)
+        val factory = MainViewModelFactory(itemRepository)
+        viewModel = ViewModelProvider(this, factory)[MainViewModel::class.java]
     }
 
     private fun observeState() {
         lifecycleScope.launch {
-            viewModel.uiState.collect { state ->
-                render(state)
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    when (state) {
+                        is UiState.Loading -> {
+                            binding.shimmerContainer?.visibility = View.VISIBLE
+                            binding.shimmerContainer?.startShimmer()
+                            binding.trendingRecyclerView.visibility = View.GONE
+                            binding.ivNoInternet?.visibility = View.GONE
+                        }
+
+                        is UiState.Success -> {
+                            binding.shimmerContainer?.stopShimmer()
+                            binding.shimmerContainer?.visibility = View.GONE
+                            binding.trendingRecyclerView.visibility = View.VISIBLE
+                            binding.ivNoInternet?.visibility = View.GONE
+                            render(state.data)
+                        }
+
+                        is UiState.Error -> {
+                            binding.shimmerContainer?.stopShimmer()
+                            binding.shimmerContainer?.visibility = View.GONE
+                            binding.trendingRecyclerView.visibility = View.GONE
+                            binding.ivNoInternet?.visibility = View.VISIBLE
+                        }
+                    }
+                }
             }
         }
     }
@@ -129,8 +218,18 @@ class MainActivity : BaseActivity() {
     }
 
     private fun setAdapter() {
-        adapter = MainAdapter(emptyList()) { item ->
-            checkCameraPermission(item)
+        adapter = MainAdapter(emptyList()) { item, isError ->
+            if (isError) DialogUtils.createConfirmDialog(
+                this@MainActivity,
+                getString(R.string.unable_load_image_title),
+                getString(R.string.unable_load_image_message),
+                getString(R.string.open_settings_title),
+                getString(R.string.close_title),
+                onConfirm = {
+                    val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
+                    startActivity(intent)
+                })
+            else checkCameraPermission(item.toUri())
         }
         binding.trendingRecyclerView.layoutManager =
             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL).apply {
@@ -167,7 +266,11 @@ class MainActivity : BaseActivity() {
         }
         photoUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
         photoUri?.let { cameraLauncher.launch(it) }
-            ?: Toast.makeText(this, "Could not create image file", Toast.LENGTH_SHORT).show()
+            ?: Toast.makeText(
+                this,
+                getString(R.string.create_image_fail_message),
+                Toast.LENGTH_SHORT
+            ).show()
     }
 
     private fun handleImageUri(uri: Uri) {

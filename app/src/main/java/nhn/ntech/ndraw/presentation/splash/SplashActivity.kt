@@ -34,11 +34,13 @@ class SplashActivity : BaseActivity() {
         userPreferences = UserPreferences(this)
         val factory = SplashViewModelFactory(userPreferences)
         viewModel = ViewModelProvider(this, factory = factory)[SplashViewModel::class.java]
-        viewModel.loadData()
-        viewModel.isLanguageSet.observe(this@SplashActivity) { language ->
-            lifecycleScope.launch {
+        
+        lifecycleScope.launch {
+            viewModel.isLanguageSet.collect { language ->
+                if (language == null) return@collect
+                
                 delay(3000)
-                if (language.isNullOrEmpty()) {
+                if (language.isEmpty()) {
                     val intent = Intent(this@SplashActivity, LanguageActivity::class.java)
                     intent.putExtra(Const.FLOW_TAG, Const.FLOW_SPLASH_CODE)
                     startActivity(intent)
@@ -51,6 +53,8 @@ class SplashActivity : BaseActivity() {
                 }
             }
         }
+        
+        viewModel.loadData()
     }
 
     private fun setPaddingScreen() {

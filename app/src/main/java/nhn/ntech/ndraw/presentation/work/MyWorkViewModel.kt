@@ -17,6 +17,7 @@ class MyWorkViewModel : ViewModel() {
     val uiState: StateFlow<MyWorkUIState> = _uiState.asStateFlow()
 
     fun updateCateMode(cateMode: CateMode, filesDir: File) {
+        _uiState.update { state -> state.copy(isCateMode = cateMode) }
         viewModelScope.launch {
             val list = withContext(Dispatchers.IO) {
                 val dir = File(filesDir, Const.MY_WORKS_FOLDER)
@@ -33,9 +34,9 @@ class MyWorkViewModel : ViewModel() {
             }
             _uiState.update { state ->
                 if (cateMode == CateMode.PHOTO) {
-                    state.copy(isCateMode = cateMode, listFile = list)
+                    state.copy(isLoading = false, listFile = list)
                 } else {
-                    state.copy(isCateMode = cateMode, listVideo = list)
+                    state.copy(isLoading = false, listVideo = list)
                 }
             }
         }

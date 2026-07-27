@@ -22,9 +22,11 @@ import nhn.ntech.ndraw.consts.Const
 import nhn.ntech.ndraw.databinding.ActivityMyWorkBinding
 import nhn.ntech.ndraw.databinding.CustomPopupBinding
 import nhn.ntech.ndraw.presentation.detail.DetailWorkActivity
+import nhn.ntech.ndraw.presentation.home.MainActivity
 import nhn.ntech.ndraw.utils.DialogUtils
 import nhn.ntech.ndraw.utils.MediaUtils
 import java.io.File
+import kotlin.jvm.java
 
 class MyWorkActivity : BaseActivity() {
 
@@ -32,6 +34,13 @@ class MyWorkActivity : BaseActivity() {
     private lateinit var myWorkAdapter: MyWorkAdapter
     private lateinit var viewModel: MyWorkViewModel
     private var isPhotoSelected = true
+    private val isFromSketching by lazy { intent.getBooleanExtra(Const.FROM_SKETCHING, false) }
+    private val isPhotoFromSketching by lazy {
+        intent.getBooleanExtra(
+            Const.IS_PHOTO_FROM_SKETCHING,
+            false
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +69,17 @@ class MyWorkActivity : BaseActivity() {
 
     private fun render(state: MyWorkUIState) = with(binding) {
         if (!::myWorkAdapter.isInitialized) return@with
+
+        if (state.isLoading) {
+            shimmerContainer.visibility = View.VISIBLE
+            shimmerContainer.startShimmer()
+            rvMyWork.visibility = View.GONE
+            tvEmpty.visibility = View.GONE
+            return@with
+        } else {
+            shimmerContainer.stopShimmer()
+            shimmerContainer.visibility = View.GONE
+        }
 
         val isPhoto = state.isCateMode == CateMode.PHOTO
 
@@ -136,6 +156,9 @@ class MyWorkActivity : BaseActivity() {
 
         btnBack.setOnClickListener {
             exitFromSelectMode()
+            if (isFromSketching) {
+                startActivity(Intent(this@MyWorkActivity, MainActivity::class.java))
+            }
             finish()
         }
 
@@ -176,9 +199,10 @@ class MyWorkActivity : BaseActivity() {
                 lifecycleScope.launch {
                     var successCount = 0
                     for (file in selectedFiles) {
-                        val success = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
-                            MediaUtils.saveToGallery(this@MyWorkActivity, file, isPhotoSelected)
-                        }
+                        val success =
+                            kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+                                MediaUtils.saveToGallery(this@MyWorkActivity, file, isPhotoSelected)
+                            }
                         if (success) successCount++
                     }
                     Toast.makeText(
@@ -201,6 +225,11 @@ class MyWorkActivity : BaseActivity() {
     }
 
     private fun initView() {
+        if (isFromSketching) {
+            val cateMode = if (isPhotoFromSketching) CateMode.PHOTO else CateMode.VIDEO
+            viewModel.updateCateMode(cateMode, filesDir)
+        }
+
         myWorkAdapter = MyWorkAdapter(
             emptyList(),
             onItemClick = { file ->
@@ -275,9 +304,10 @@ class MyWorkActivity : BaseActivity() {
         with(popupBinding) {
             tvDownload.setOnClickListener {
                 lifecycleScope.launch {
-                    val success = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
-                        MediaUtils.saveToGallery(this@MyWorkActivity, file, isPhotoSelected)
-                    }
+                    val success =
+                        kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+                            MediaUtils.saveToGallery(this@MyWorkActivity, file, isPhotoSelected)
+                        }
                     Toast.makeText(
                         this@MyWorkActivity,
                         if (success) getString(R.string.download_success)

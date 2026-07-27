@@ -1,13 +1,14 @@
 package nhn.ntech.ndraw.presentation.detail
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -15,6 +16,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.C
 import androidx.media3.common.Player
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -33,8 +38,10 @@ class DetailWorkActivity : BaseActivity() {
     private lateinit var binding: ActivityDetailWorkBinding
     private val exoPlayerHelper by lazy { ExoPlayerHelper(this) }
     private val viewModel by lazy { DetailWorkViewModel() }
-    private var file: File? = null
-    private var isPhoto = true
+    private val file: File by lazy {
+        intent.getStringExtra(Const.FILE_TAG)?.let { File(it) } ?: File("")
+    }
+    private val isPhoto by lazy { intent.getBooleanExtra(Const.IS_PHOTO_TAG, true) }
     private val handler by lazy { Handler(Looper.getMainLooper()) }
     private val updateProgressRunnable = object : Runnable {
         override fun run() {
@@ -54,7 +61,6 @@ class DetailWorkActivity : BaseActivity() {
         binding = ActivityDetailWorkBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setPaddingScreen()
-        getValueByIntent()
         initView()
         setOnListener()
         observeState()
@@ -73,11 +79,6 @@ class DetailWorkActivity : BaseActivity() {
         }
     }
 
-    private fun getValueByIntent() {
-        file = File(intent.getStringExtra(Const.FILE_TAG) ?: "")
-        isPhoto = intent.getBooleanExtra(Const.IS_PHOTO_TAG, true)
-    }
-
     private fun setOnListener() {
         with(binding) {
             btnBack.setOnClickListener { finish() }
@@ -87,7 +88,7 @@ class DetailWorkActivity : BaseActivity() {
             }
 
             btnDownload.setOnClickListener {
-                val currentFile = file ?: return@setOnClickListener
+                val currentFile = file
                 lifecycleScope.launch {
                     val success = withContext(Dispatchers.IO) {
                         MediaUtils.saveToGallery(this@DetailWorkActivity, currentFile, isPhoto)
@@ -102,7 +103,7 @@ class DetailWorkActivity : BaseActivity() {
             }
 
             btnShare.setOnClickListener {
-                val currentFile = file ?: return@setOnClickListener
+                val currentFile = file
                 MediaUtils.shareFile(this@DetailWorkActivity, currentFile, isPhoto)
             }
 
@@ -167,8 +168,9 @@ class DetailWorkActivity : BaseActivity() {
             progressContainer.visibility = View.GONE
             pvVideo.visibility = View.GONE
             ivPhoto.visibility = View.VISIBLE
+
             Glide.with(this@DetailWorkActivity)
-                .load(file?.toUri())
+                .load(file)
                 .into(ivPhoto)
         } else {
             tvTitle.text = getString(R.string.video_title)
@@ -179,12 +181,20 @@ class DetailWorkActivity : BaseActivity() {
     }
 
     private fun initVideo() {
+        binding.shimmerContainer.visibility = View.VISIBLE
+        binding.shimmerContainer.startShimmer()
+        binding.pvVideo.visibility = View.GONE
+
         exoPlayerHelper.initPlayer(binding.pvVideo)
-        val uri = file?.toUri() ?: "".toUri()
+        val uri = file.toUri()
         exoPlayerHelper.setMedia(uri)
         exoPlayerHelper.getPLayer()?.addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
                 if (playbackState == Player.STATE_READY) {
+                    binding.shimmerContainer.stopShimmer()
+                    binding.shimmerContainer.visibility = View.GONE
+                    binding.pvVideo.visibility = View.VISIBLE
+
                     val duration = exoPlayerHelper.getDuration()
                     if (exoPlayerHelper.isPlaying()) {
                         binding.btnPlay.setImageResource(R.drawable.ic_gradient_pause)
@@ -216,7 +226,7 @@ class DetailWorkActivity : BaseActivity() {
             getString(R.string.delete_title),
             getString(R.string.delete_description),
             onConfirm = {
-                viewModel.deleteFile(file ?: return@createConfirmDialog) {
+                viewModel.deleteFile(file) {
                     Toast.makeText(
                         this@DetailWorkActivity,
                         getString(R.string.success_delete),

@@ -1,6 +1,7 @@
 package nhn.ntech.ndraw.presentation.sketching
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -35,6 +36,7 @@ import nhn.ntech.ndraw.BaseActivity
 import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.utils.DialogUtils
 import nhn.ntech.ndraw.ext.clearTextShader
+import nhn.ntech.ndraw.presentation.work.MyWorkActivity
 import java.io.File
 
 class SketchingActivity : BaseActivity() {
@@ -106,8 +108,20 @@ class SketchingActivity : BaseActivity() {
             ContextCompat.getMainExecutor(this),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    Toast.makeText(this@SketchingActivity, "Photo saved!", Toast.LENGTH_SHORT)
-                        .show()
+                    DialogUtils.createConfirmDialog(
+                        this@SketchingActivity,
+                        getString(R.string.saved_photo_title),
+                        getString(R.string.saved_photo_des),
+                        getString(R.string.view_title),
+                        getString(R.string.close_title),
+                        onConfirm = {
+                            val intent = Intent(this@SketchingActivity, MyWorkActivity::class.java)
+                            intent.putExtra(Const.FROM_SKETCHING, true)
+                            intent.putExtra(Const.IS_PHOTO_FROM_SKETCHING, true)
+                            startActivity(intent)
+                            finish()
+                        }
+                    )
                 }
 
                 override fun onError(exception: ImageCaptureException) {
@@ -142,6 +156,7 @@ class SketchingActivity : BaseActivity() {
                         viewModel.updateRecording(true)
                         viewModel.updateRecordingTime("00:00")
                     }
+
                     is VideoRecordEvent.Status -> {
                         val timeNs = recordEvent.recordingStats.recordedDurationNanos
                         val seconds = (timeNs / 1_000_000_000).toInt()
@@ -150,11 +165,26 @@ class SketchingActivity : BaseActivity() {
                         val timeString = String.format("%02d:%02d", minutes, displaySeconds)
                         viewModel.updateRecordingTime(timeString)
                     }
+
                     is VideoRecordEvent.Finalize -> {
                         viewModel.updateRecording(false)
                         viewModel.updateRecordingTime("00:00")
                         if (!recordEvent.hasError()) {
-                            Toast.makeText(this, "Video saved!", Toast.LENGTH_SHORT).show()
+                            DialogUtils.createConfirmDialog(
+                                this@SketchingActivity,
+                                getString(R.string.saved_video_title),
+                                getString(R.string.saved_video_des),
+                                getString(R.string.view_title),
+                                getString(R.string.close_title),
+                                onConfirm = {
+                                    val intent =
+                                        Intent(this@SketchingActivity, MyWorkActivity::class.java)
+                                    intent.putExtra(Const.FROM_SKETCHING, true)
+                                    intent.putExtra(Const.IS_PHOTO_FROM_SKETCHING, false)
+                                    startActivity(intent)
+                                    finish()
+                                }
+                            )
                         } else {
                             recording?.close()
                             recording = null
@@ -205,15 +235,21 @@ class SketchingActivity : BaseActivity() {
             }
 
             CaptureMode.VIDEO -> {
-                tvTogglePhoto.visibility = if(state.isRecording) View.GONE else View.VISIBLE
+                tvTogglePhoto.visibility = if (state.isRecording) View.GONE else View.VISIBLE
                 tvVideo.visibility = View.GONE
                 tvPhoto.apply {
                     when {
                         state.isRecording -> {
                             text = state.recordingTime
                             clearTextShader()
-                            setTextColor(ContextCompat.getColor(this@SketchingActivity, R.color.bright_red))
+                            setTextColor(
+                                ContextCompat.getColor(
+                                    this@SketchingActivity,
+                                    R.color.bright_red
+                                )
+                            )
                         }
+
                         else -> {
                             text = getString(R.string.video_title)
                             setTextGradientColor()
