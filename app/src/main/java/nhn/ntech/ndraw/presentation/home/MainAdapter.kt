@@ -15,7 +15,7 @@ import nhn.ntech.ndraw.utils.TransferUtils
 
 class MainAdapter(
     private var items: List<String>,
-    private val onItemClick: (String, Boolean) -> Unit,
+    private val onItemClick: (String) -> Unit,
 ) : RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
 
     companion object {
@@ -23,8 +23,6 @@ class MainAdapter(
         private const val HEIGHT_MEDIUM_DP = 258
         private const val HEIGHT_LARGE_DP = 302
     }
-
-    private var isPhotoError = false
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -53,34 +51,12 @@ class MainAdapter(
 
         Glide.with(holder.itemView.context)
             .load(item)
-            .listener(object : RequestListener<Drawable> {
-                override fun onResourceReady(
-                    resource: Drawable?,
-                    model: Any?,
-                    target: Target<Drawable?>?,
-                    dataSource: DataSource?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    isPhotoError = false
-                    return false
-                }
-
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<Drawable?>?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    isPhotoError = true
-                    return true
-                }
-            })
             .error(R.drawable.ic_image_error)
             .into(holder.binding.ivTrendItem)
 
 
         holder.binding.root.setOnClickListener {
-            onItemClick(item, isPhotoError)
+            onItemClick(item)
         }
     }
 

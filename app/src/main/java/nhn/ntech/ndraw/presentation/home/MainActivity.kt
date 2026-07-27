@@ -45,6 +45,7 @@ class MainActivity : BaseActivity() {
     private var pendingItemUri: Uri? = null
     private val networkObserver by lazy { NetworkObserver.getNetworkObserver(this) }
     private var wasNetworkLost: Boolean = false
+    private var hasLostInternet: Boolean = false
 
     private val cameraPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -110,6 +111,7 @@ class MainActivity : BaseActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 networkObserver.isOnline.collect { isOnline ->
                     if (isOnline) {
+                        hasLostInternet = false
                         if (wasNetworkLost) {
                             wasNetworkLost = false
                             Toast.makeText(
@@ -122,6 +124,7 @@ class MainActivity : BaseActivity() {
                             viewModel.fetchData()
                         }
                     } else {
+                        hasLostInternet = true
                         if (networkObserver.shouldShowOfflineDialog()) {
                             wasNetworkLost = true
                             DialogUtils.createConfirmDialog(
@@ -218,8 +221,8 @@ class MainActivity : BaseActivity() {
     }
 
     private fun setAdapter() {
-        adapter = MainAdapter(emptyList()) { item, isError ->
-            if (isError) DialogUtils.createConfirmDialog(
+        adapter = MainAdapter(emptyList()) { item ->
+            if (hasLostInternet) DialogUtils.createConfirmDialog(
                 this@MainActivity,
                 getString(R.string.unable_load_image_title),
                 getString(R.string.unable_load_image_message),

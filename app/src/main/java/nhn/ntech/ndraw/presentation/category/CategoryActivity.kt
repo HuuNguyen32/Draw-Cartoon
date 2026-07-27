@@ -42,6 +42,7 @@ class CategoryActivity : BaseActivity() {
     private var pendingItemUri: Uri? = null
     private val networkObserver by lazy { NetworkObserver.getNetworkObserver(this) }
     private var wasNetworkLost: Boolean = false
+    private var hasLostInternet: Boolean = false
 
     private val cameraPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -80,6 +81,7 @@ class CategoryActivity : BaseActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 networkObserver.isOnline.collect { isOnline ->
                     if (isOnline) {
+                        hasLostInternet = false
                         if (wasNetworkLost) {
                             wasNetworkLost = false
                             Toast.makeText(
@@ -92,6 +94,7 @@ class CategoryActivity : BaseActivity() {
                             viewModel.loadData()
                         }
                     } else {
+                        hasLostInternet = true
                         if (networkObserver.shouldShowOfflineDialog()) {
                             wasNetworkLost = true
                             DialogUtils.createConfirmDialog(
@@ -165,8 +168,8 @@ class CategoryActivity : BaseActivity() {
     }
 
     private fun setAdapters() {
-        itemAdapter = MainAdapter(items = emptyList()) { item, isError ->
-            if (isError) DialogUtils.createConfirmDialog(
+        itemAdapter = MainAdapter(items = emptyList()) { item ->
+            if (hasLostInternet) DialogUtils.createConfirmDialog(
                 this@CategoryActivity,
                 getString(R.string.unable_load_image_title),
                 getString(R.string.unable_load_image_message),
