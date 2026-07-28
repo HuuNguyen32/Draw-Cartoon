@@ -77,4 +77,5 @@
     <string name="saved_video_des">Your video has been successfully saved to My work. View it now</string>
 
     <string name="view_title">View</string>
+    <string name="play_media_error_message">Unable to play this media %1$s</string>
 </resources>

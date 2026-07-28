@@ -41,4 +41,41 @@
     <string name="camera_title">Caméra</string>
     <string name="photo_title">Photo</string>
     <string name="video_title">Vidéo</string>
+    <string name="no_photos_yet">Pas encore de photos</string>
+    <string name="no_videos_yet">Pas encore de vidéos</string>
+    <string name="download_title">Télécharger</string>
+    <string name="share_title">Partager</string>
+
+    <string name="delete_title">Supprimer</string>
+    <string name="delete_description">Êtes-vous sûr de vouloir supprimer les éléments sélectionnés ?</string>
+    <string name="success_delete">Supprimé avec succès</string>
+    <string name="instruction_title">Instructions</string>
+    <string name="ok_title">OK</string>
+
+    <string name="start_time">00:00</string>
+
+    <string name="download_success">Enregistré avec succès dans la galerie</string>
+    <string name="download_failed">Échec de l\'enregistrement dans la galerie</string>
+    <string name="share_failed">Impossible de partager ce fichier</string>
+
+    <string name="media_permission_error_message">Autorisation média refusée</string>
+    <string name="camera_permission_error_message">Autorisation caméra refusée</string>
+    <string name="no_internet_connected_message">Vous êtes hors ligne. Veuillez activer le Wi-Fi ou les données mobiles pour continuer</string>
+    <string name="internet_connected_message">Internet connecté</string>
+    <string name="create_image_fail_message">Impossible de créer le fichier image</string>
+    <string name="no_title">Non</string>
+
+    <string name="no_internet_title">Pas de connexion Internet</string>
+    <string name="open_settings_title">Ouvrir les paramètres</string>
+    <string name="close_title">Fermer</string>
+    <string name="unable_load_image_title">Impossible de charger l\'image</string>
+    <string name="unable_load_image_message">Veuillez activer le Wi-Fi ou les données mobiles pour charger les images</string>
+
+    <string name="saved_photo_title">Photo enregistrée !</string>
+    <string name="saved_video_title">Vidéo enregistrée !</string>
+    <string name="saved_photo_des">Votre photo a été enregistrée avec succès dans Mon travail. Voir maintenant</string>
+    <string name="saved_video_des">Votre vidéo a été enregistrée avec succès dans Mon travail. Voir maintenant</string>
+
+    <string name="view_title">Voir</string>
+    <string name="play_media_error_message">Impossible de lire ce média %1$s</string>
 </resources>

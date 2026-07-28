@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.C
+import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -210,6 +211,17 @@ class DetailWorkActivity : BaseActivity() {
                     binding.sbVideo.progress = binding.sbVideo.max
                     handler.removeCallbacks(updateProgressRunnable)
                 }
+            }
+
+            override fun onPlayerError(error: PlaybackException) {
+                binding.shimmerContainer.stopShimmer()
+                binding.shimmerContainer.visibility = View.GONE
+                Toast.makeText(
+                    this@DetailWorkActivity,
+                    getString(R.string.play_media_error_message, error.message),
+                    Toast.LENGTH_LONG
+                ).show()
+                Log.e("DetailWorkActivity", "onPlayerError: $error")
             }
         })
     }
