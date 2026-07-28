@@ -51,6 +51,7 @@ class MainAdapter(
 
         Glide.with(holder.itemView.context)
             .load(item)
+            .placeholder(R.drawable.white_bg)
             .error(R.drawable.ic_image_error)
             .into(holder.binding.ivTrendItem)
 
