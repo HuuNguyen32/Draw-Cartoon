@@ -34,11 +34,15 @@ import nhn.ntech.ndraw.helper.PermissionManager
 
 import android.view.View
 import nhn.ntech.ndraw.R
+import nhn.ntech.ndraw.domain.prefs.UserPreferences
+import nhn.ntech.ndraw.ext.reviewApp
 import nhn.ntech.ndraw.helper.NetworkObserver
+import nhn.ntech.ndraw.utils.LanguageUtils
 
 class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private val userPreferences by lazy { UserPreferences(this) }
     private lateinit var adapter: MainAdapter
     private lateinit var viewModel: MainViewModel
     private var photoUri: Uri? = null
@@ -99,6 +103,8 @@ class MainActivity : BaseActivity() {
         setContentView(binding.root)
         setPaddingScreen()
         setViewModel()
+        val currentTotalUseApp = userPreferences.getTotalUseApp()
+        userPreferences.setTotalUseApp(currentTotalUseApp + 1)
         setAdapter()
         setOnClickListener()
         observeState()
@@ -190,7 +196,7 @@ class MainActivity : BaseActivity() {
     private fun setOnClickListener() {
         with(binding) {
             btnI.setOnClickListener {
-                DialogUtils.createInstructionDialog(this@MainActivity)
+                DialogUtils.createInstructionDialog(this@MainActivity, this@MainActivity)
             }
 
             btnSetting.setOnClickListener {
@@ -205,7 +211,7 @@ class MainActivity : BaseActivity() {
                         checkCameraPermissionAndOpen()
                     },
                     fromGallery = {
-                        checkMediaPermissionAndOpen()
+                        checkCameraPermissionAndOpenGallery()
                     }
                 )
             }
@@ -258,6 +264,15 @@ class MainActivity : BaseActivity() {
         )
     }
 
+    private fun checkCameraPermissionAndOpenGallery() {
+        PermissionManager.checkCameraPermission(
+            activity = this,
+            onGranted = { openGallery() },
+            onLaunchLauncher = { cameraPermissionLauncher.launch(PermissionManager.cameraPermission) },
+            description = getString(R.string.camera_permission_settings_des)
+        )
+    }
+
     private fun openGallery() {
         galleryLauncher.launch("image/*")
     }
@@ -301,7 +316,47 @@ class MainActivity : BaseActivity() {
             },
             onLaunchLauncher = {
                 cameraPermissionLauncher.launch(PermissionManager.cameraPermission)
-            }
+            },
+            description = getString(R.string.camera_permission_settings_des)
         )
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        LanguageUtils.setLocale(this, UserPreferences(this).getLanguage() ?: "en")
+        with(binding) {
+            tvTitle.text = getString(R.string.draw_cartoon_title)
+            tvCreate?.text = getString(R.string.create_tv)
+            tvCategory?.text = getString(R.string.category_tv)
+            tvMyWork?.text = getString(R.string.my_work_tv)
+            tvTrending.text = getString(R.string.trending_title)
+        }
+    }
+
+    @Deprecated("This method has been deprecated in favor of using the\n      {@link OnBackPressedDispatcher} via {@link #getOnBackPressedDispatcher()}.\n      The OnBackPressedDispatcher controls how back button events are dispatched\n      to one or more {@link OnBackPressedCallback} objects.")
+    override fun onBackPressed() {
+        if (!userPreferences.isRateApp() && userPreferences.getTotalUseApp() % 2 == 0) {
+            DialogUtils.createRateDialog(this@MainActivity) { rate ->
+                when (rate) {
+                    0 -> Toast.makeText(
+                        this,
+                        getString(R.string.please_select_stars_des),
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    in 1..3 -> {
+                        userPreferences.setRateApp(true)
+                        super.onBackPressed()
+                    }
+
+                    else -> {
+                        userPreferences.setRateApp(true)
+                        reviewApp(this, false)
+                    }
+                }
+            }
+        } else {
+            super.onBackPressed()
+        }
     }
 }

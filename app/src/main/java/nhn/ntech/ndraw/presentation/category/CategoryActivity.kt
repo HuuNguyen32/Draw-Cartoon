@@ -147,6 +147,7 @@ class CategoryActivity : BaseActivity() {
                                 categoryAdapter.setSelectedPosition(selectedIndex)
                             }
                             itemAdapter.updateData(data.items)
+                            binding.listRecyclerView.scrollToPosition(0)
                         }
 
                         is UiState.Error -> {
@@ -178,7 +179,8 @@ class CategoryActivity : BaseActivity() {
                 onConfirm = {
                     val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
                     startActivity(intent)
-                })
+                }
+            )
             else checkCameraPermission(item.toUri())
         }
 
@@ -232,7 +234,8 @@ class CategoryActivity : BaseActivity() {
             },
             onLaunchLauncher = {
                 cameraPermissionLauncher.launch(PermissionManager.cameraPermission)
-            }
+            },
+            description = getString(R.string.camera_permission_settings_des)
         )
     }
 

@@ -2,6 +2,7 @@ package nhn.ntech.ndraw.presentation.splash
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -33,11 +34,17 @@ class SplashActivity : BaseActivity() {
         userPreferences = UserPreferences(this)
         val factory = SplashViewModelFactory(userPreferences)
         viewModel = ViewModelProvider(this, factory = factory)[SplashViewModel::class.java]
-        
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+
+            }
+        })
+
         lifecycleScope.launch {
             viewModel.isLanguageSet.collect { language ->
                 if (language == null) return@collect
-                
+
                 delay(3000)
                 if (language.isEmpty()) {
                     val intent = Intent(this@SplashActivity, LanguageActivity::class.java)
@@ -52,7 +59,7 @@ class SplashActivity : BaseActivity() {
                 }
             }
         }
-        
+
         viewModel.loadData()
     }
 

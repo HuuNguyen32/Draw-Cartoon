@@ -44,6 +44,7 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginVertical="12dp"
             android:text="@string/btn_next"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

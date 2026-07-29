@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keep class nhn.ntech.ndraw.data.** {*; }
+-keep class nhn.ntech.ndraw.domain.** {*; }
+-keep class nhn.ntech.ndraw.presentation.splash.** {*; }
+-keep public class com.google.android.gms.** { public protected*; }

@@ -3,6 +3,7 @@ package nhn.ntech.ndraw.presentation.language
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -57,8 +58,9 @@ class LanguageActivity : BaseActivity() {
                 }
 
                 Const.FLOW_SETTING_CODE -> {
-                    startActivity(Intent(this, MainActivity::class.java))
-                    finish()
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
                 }
 
                 else -> finish()
@@ -67,9 +69,11 @@ class LanguageActivity : BaseActivity() {
     }
 
     private fun setAdapter() {
-        adapter = LanguageAdapter(viewModel.languageList.value ?: emptyList()) { language ->
-            viewModel.setLanguage(language)
-        }
+        adapter =
+            LanguageAdapter(viewModel.languageList.value ?: emptyList()) { language, isSelected ->
+                viewModel.setLanguage(language)
+                if (isSelected) binding.btnCheck.visibility = View.VISIBLE
+            }
         binding.rvLanguage.adapter = adapter
         binding.rvLanguage.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
@@ -78,20 +82,23 @@ class LanguageActivity : BaseActivity() {
             adapter.updateData(languageList)
             if (languageList.isNotEmpty()) {
                 val position = getLanguagePosition(languageList)
-                adapter.setSelectedPosition(position)
-                viewModel.setLanguage(languageList[position])
+                if (position != -1) {
+                    binding.btnCheck.visibility = View.VISIBLE
+                    adapter.setSelectedPosition(position)
+                    viewModel.setLanguage(languageList[position])
+                }
             }
         }
     }
 
     private fun getLanguagePosition(languageList: List<Language>): Int {
-        val currentLanguage = viewModel.getLanguage() ?: "en"
+        val currentLanguage = viewModel.getLanguage() ?: return -1
         for (i in languageList.indices) {
             if (languageList[i].code == currentLanguage) {
                 return i
             }
         }
-        return 0
+        return -1
     }
 
     private fun setPaddingScreen() {

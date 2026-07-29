@@ -1,13 +1,9 @@
 package nhn.ntech.ndraw.presentation.permission
 
-import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Typeface
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.text.Spannable
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -174,7 +170,7 @@ class PermissionActivity : BaseActivity() {
     private fun setPaddingScreen() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
     }

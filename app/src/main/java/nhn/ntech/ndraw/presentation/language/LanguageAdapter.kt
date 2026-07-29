@@ -9,7 +9,7 @@ import nhn.ntech.ndraw.databinding.CardLanguageBinding
 
 class LanguageAdapter(
     private var languageList: List<Language>,
-    private val onLanguageSelected: (Language) -> Unit
+    private val onLanguageSelected: (Language, Boolean) -> Unit
 ) : RecyclerView.Adapter<LanguageAdapter.LanguageViewHolder>() {
 
     private var selectedPosition: Int = RecyclerView.NO_POSITION
@@ -46,7 +46,7 @@ class LanguageAdapter(
             selectedPosition = holder.adapterPosition
             if (selectedPosition != RecyclerView.NO_POSITION) {
                 val languageTrans = languageList[selectedPosition]
-                onLanguageSelected(languageTrans)
+                onLanguageSelected(languageTrans, true)
                 if (previous != RecyclerView.NO_POSITION) {
                     notifyItemChanged(previous)
                 }

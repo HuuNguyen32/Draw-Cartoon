@@ -19,4 +19,6 @@
     <color name="charcoal_cray">#3F3E3F</color>
 
     <color name="bright_red">#FF3535</color>
+    <color name="dim_gray">#FF444444</color>
+    <color name="gainsboro">#FFDCDCDC</color>
 </resources>

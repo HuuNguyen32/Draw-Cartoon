@@ -9,6 +9,8 @@ import android.view.View
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.registerForActivityResult
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -36,6 +38,7 @@ import nhn.ntech.ndraw.BaseActivity
 import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.utils.DialogUtils
 import nhn.ntech.ndraw.ext.clearTextShader
+import nhn.ntech.ndraw.helper.PermissionManager
 import nhn.ntech.ndraw.presentation.work.MyWorkActivity
 import java.io.File
 
@@ -49,6 +52,22 @@ class SketchingActivity : BaseActivity() {
     private var recording: Recording? = null
     private var isCameraSelector: CameraSelector? = null
     private var currentCaptureMode: CaptureMode = CaptureMode.PHOTO
+    private val cameraPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (!isGranted) {
+                Toast.makeText(
+                    this,
+                    getString(R.string.camera_permission_error_message),
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                Toast.makeText(
+                    this,
+                    getString(R.string.camera_permission_success_message),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +81,24 @@ class SketchingActivity : BaseActivity() {
         setOnListeners()
         observeState()
         startCamera()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        startCheckPermission()
+    }
+
+    private fun startCheckPermission() {
+        PermissionManager.checkCameraPermission(
+            this@SketchingActivity,
+            onGranted = {
+                startCamera()
+            },
+            onLaunchLauncher = {
+                cameraPermissionLauncher.launch(PermissionManager.cameraPermission)
+            },
+            isSketching = true
+        )
     }
 
     private fun startCamera(cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA) {
@@ -282,7 +319,12 @@ class SketchingActivity : BaseActivity() {
             btnBack.setOnClickListener { finish() }
             btnSwap.setOnClickListener { viewModel.toggleFlip() }
             btnOpacity.setOnClickListener { viewModel.toggleOpacity() }
-            btnGuide.setOnClickListener { DialogUtils.createInstructionDialog(this@SketchingActivity) }
+            btnGuide.setOnClickListener {
+                DialogUtils.createInstructionDialog(
+                    this@SketchingActivity,
+                    this@SketchingActivity
+                )
+            }
             btnLock.setOnClickListener { viewModel.toggleLock() }
             btnUnlock.setOnClickListener { viewModel.toggleLock() }
             btnFlash.setOnClickListener { viewModel.toggleFlashMode() }

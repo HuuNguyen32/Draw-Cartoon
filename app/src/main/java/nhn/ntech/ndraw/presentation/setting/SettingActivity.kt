@@ -2,6 +2,7 @@ package nhn.ntech.ndraw.presentation.setting
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -10,6 +11,7 @@ import nhn.ntech.ndraw.BaseActivity
 import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.consts.Const
 import nhn.ntech.ndraw.databinding.ActivitySettingBinding
+import nhn.ntech.ndraw.domain.prefs.UserPreferences
 import nhn.ntech.ndraw.presentation.language.LanguageActivity
 import nhn.ntech.ndraw.utils.DialogUtils
 import nhn.ntech.ndraw.ext.policy
@@ -20,6 +22,7 @@ class SettingActivity : BaseActivity() {
 
     private lateinit var binding: ActivitySettingBinding
     private lateinit var adapter: SettingAdapter
+    private val userPreferences by lazy { UserPreferences(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,11 +53,27 @@ class SettingActivity : BaseActivity() {
                     val intent = Intent(this, LanguageActivity::class.java)
                     intent.putExtra(Const.FLOW_TAG, Const.FLOW_SETTING_CODE)
                     startActivity(intent)
+                    finish()
                 }
 
                 2 -> {
-                    DialogUtils.createRateDialog(this) {
-                        reviewApp(this, false)
+                    DialogUtils.createRateDialog(this) { rate ->
+                        when (rate) {
+                            0 -> Toast.makeText(
+                                this,
+                                getString(R.string.please_select_stars_des),
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            in 1..3 -> {
+                                userPreferences.setRateApp(true)
+                            }
+
+                            else -> {
+                                userPreferences.setRateApp(true)
+                                reviewApp(this, false)
+                            }
+                        }
                     }
                 }
 

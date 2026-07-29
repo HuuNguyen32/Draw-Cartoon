@@ -16,11 +16,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import kotlinx.coroutines.launch
+import androidx.activity.result.contract.ActivityResultContracts
 import nhn.ntech.ndraw.BaseActivity
 import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.consts.Const
 import nhn.ntech.ndraw.databinding.ActivityMyWorkBinding
 import nhn.ntech.ndraw.databinding.CustomPopupBinding
+import nhn.ntech.ndraw.helper.PermissionManager
 import nhn.ntech.ndraw.presentation.detail.DetailWorkActivity
 import nhn.ntech.ndraw.presentation.home.MainActivity
 import nhn.ntech.ndraw.utils.DialogUtils
@@ -40,6 +42,54 @@ class MyWorkActivity : BaseActivity() {
             Const.IS_PHOTO_FROM_SKETCHING,
             false
         )
+    }
+
+    private var pendingDownloadAction: (() -> Unit)? = null
+
+    private val mediaPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                pendingDownloadAction?.invoke()
+            } else {
+                Toast.makeText(
+                    this,
+                    getString(R.string.media_permission_error_message),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            pendingDownloadAction = null
+        }
+
+    private fun checkMediaPermissionAndDownload(onPermissionGranted: () -> Unit) {
+        PermissionManager.checkMediaPermission(
+            activity = this,
+            onGranted = {
+                onPermissionGranted()
+            },
+            onLaunchLauncher = {
+                pendingDownloadAction = onPermissionGranted
+                mediaPermissionLauncher.launch(PermissionManager.photoPermission)
+            }
+        )
+    }
+
+    private fun downloadFiles(files: List<File>) {
+        lifecycleScope.launch {
+            var successCount = 0
+            for (file in files) {
+                val success =
+                    kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+                        MediaUtils.saveToGallery(this@MyWorkActivity, file, isPhotoSelected)
+                    }
+                if (success) successCount++
+            }
+            Toast.makeText(
+                this@MyWorkActivity,
+                if (successCount > 0) getString(R.string.download_success)
+                else getString(R.string.download_failed),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,6 +140,10 @@ class MyWorkActivity : BaseActivity() {
         myWorkAdapter.updateData(currentList)
 
         updateTabUI(isPhoto)
+
+        val selectMoreSrc =
+            if (state.isSelectMore) R.drawable.ic_fill_select_more else R.drawable.ic_select_more
+        btnSelectMore.setImageResource(selectMoreSrc)
 
         val isEmpty = currentList.isEmpty()
 
@@ -165,13 +219,21 @@ class MyWorkActivity : BaseActivity() {
         btnSelectMore.setOnClickListener {
             if (::myWorkAdapter.isInitialized) {
                 myWorkAdapter.selectAll()
+                viewModel.toggleSelectMore()
             }
         }
 
         btnDelete.setOnClickListener {
             if (::myWorkAdapter.isInitialized) {
                 val selectedFiles = myWorkAdapter.getSelectedItems()
-                if (selectedFiles.isEmpty()) return@setOnClickListener
+                if (selectedFiles.isEmpty()) {
+                    Toast.makeText(
+                        this@MyWorkActivity,
+                        getString(R.string.no_item_selected_to_delete_des),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return@setOnClickListener
+                }
                 confirmAndDeleteFiles(selectedFiles)
             }
         }
@@ -195,22 +257,16 @@ class MyWorkActivity : BaseActivity() {
         btnDownload.setOnClickListener {
             if (::myWorkAdapter.isInitialized) {
                 val selectedFiles = myWorkAdapter.getSelectedItems()
-                if (selectedFiles.isEmpty()) return@setOnClickListener
-                lifecycleScope.launch {
-                    var successCount = 0
-                    for (file in selectedFiles) {
-                        val success =
-                            kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
-                                MediaUtils.saveToGallery(this@MyWorkActivity, file, isPhotoSelected)
-                            }
-                        if (success) successCount++
-                    }
+                if (selectedFiles.isEmpty()) {
                     Toast.makeText(
                         this@MyWorkActivity,
-                        if (successCount > 0) getString(R.string.download_success)
-                        else getString(R.string.download_failed),
+                        getString(R.string.no_item_selected_to_download_des),
                         Toast.LENGTH_SHORT
                     ).show()
+                    return@setOnClickListener
+                }
+                checkMediaPermissionAndDownload {
+                    downloadFiles(selectedFiles)
                 }
             }
         }
@@ -218,7 +274,14 @@ class MyWorkActivity : BaseActivity() {
         btnShare.setOnClickListener {
             if (::myWorkAdapter.isInitialized) {
                 val selectedFiles = myWorkAdapter.getSelectedItems()
-                if (selectedFiles.isEmpty()) return@setOnClickListener
+                if (selectedFiles.isEmpty()) {
+                    Toast.makeText(
+                        this@MyWorkActivity,
+                        getString(R.string.no_item_selected_to_share_des),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return@setOnClickListener
+                }
                 MediaUtils.shareFiles(this@MyWorkActivity, selectedFiles, isPhotoSelected)
             }
         }
@@ -303,19 +366,10 @@ class MyWorkActivity : BaseActivity() {
 
         with(popupBinding) {
             tvDownload.setOnClickListener {
-                lifecycleScope.launch {
-                    val success =
-                        kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
-                            MediaUtils.saveToGallery(this@MyWorkActivity, file, isPhotoSelected)
-                        }
-                    Toast.makeText(
-                        this@MyWorkActivity,
-                        if (success) getString(R.string.download_success)
-                        else getString(R.string.download_failed),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
                 popupWindow.dismiss()
+                checkMediaPermissionAndDownload {
+                    downloadFiles(listOf(file))
+                }
             }
             tvShare.setOnClickListener {
                 MediaUtils.shareFile(this@MyWorkActivity, file, isPhotoSelected)

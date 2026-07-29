@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -24,17 +25,48 @@ import com.bumptech.glide.request.target.Target
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import androidx.activity.result.contract.ActivityResultContracts
 import nhn.ntech.ndraw.BaseActivity
 import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.consts.Const
 import nhn.ntech.ndraw.databinding.ActivityDetailWorkBinding
 import nhn.ntech.ndraw.helper.ExoPlayerHelper
+import nhn.ntech.ndraw.helper.PermissionManager
 import nhn.ntech.ndraw.utils.DialogUtils
 import nhn.ntech.ndraw.utils.MediaUtils
 import nhn.ntech.ndraw.utils.TransferUtils
 import java.io.File
 
 class DetailWorkActivity : BaseActivity() {
+
+    private var pendingDownloadAction: (() -> Unit)? = null
+
+    private val mediaPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                pendingDownloadAction?.invoke()
+            } else {
+                Toast.makeText(
+                    this,
+                    getString(R.string.media_permission_error_message),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            pendingDownloadAction = null
+        }
+
+    private fun checkMediaPermissionAndDownload(onPermissionGranted: () -> Unit) {
+        PermissionManager.checkMediaPermission(
+            activity = this,
+            onGranted = {
+                onPermissionGranted()
+            },
+            onLaunchLauncher = {
+                pendingDownloadAction = onPermissionGranted
+                mediaPermissionLauncher.launch(PermissionManager.photoPermission)
+            }
+        )
+    }
 
     private lateinit var binding: ActivityDetailWorkBinding
     private val exoPlayerHelper by lazy { ExoPlayerHelper(this) }
@@ -44,6 +76,8 @@ class DetailWorkActivity : BaseActivity() {
     }
     private val isPhoto by lazy { intent.getBooleanExtra(Const.IS_PHOTO_TAG, true) }
     private val handler by lazy { Handler(Looper.getMainLooper()) }
+    private var wasPlayingBeforePause = false
+
     private val updateProgressRunnable = object : Runnable {
         override fun run() {
             val currentPos = exoPlayerHelper.getCurrentPosition()
@@ -67,9 +101,35 @@ class DetailWorkActivity : BaseActivity() {
         observeState()
     }
 
+    private fun updateNavButtonsState(
+        currentPos: Long = exoPlayerHelper.getCurrentPosition(),
+        duration: Long = exoPlayerHelper.getDuration(),
+    ) {
+        if (isPhoto) return
+        val isAtStart = currentPos <= 0
+        val isAtEnd = duration in 1..currentPos
+
+        binding.btnPrevious.isEnabled = !isAtStart
+        binding.btnPrevious.setColorFilter(
+            ContextCompat.getColor(
+                this,
+                if (isAtStart) R.color.gainsboro else R.color.dim_gray
+            )
+        )
+
+        binding.btnNext.isEnabled = !isAtEnd
+        binding.btnNext.setColorFilter(
+            ContextCompat.getColor(
+                this,
+                if (isAtEnd) R.color.gainsboro else R.color.dim_gray
+            )
+        )
+    }
+
     private fun render(state: DetailWorkUIState) = with(binding) {
         tvCounterTime.text = state.counterTime
         binding.sbVideo.progress = state.currentProgress
+        updateNavButtonsState(state.currentProgress.toLong())
     }
 
     private fun observeState() {
@@ -90,16 +150,18 @@ class DetailWorkActivity : BaseActivity() {
 
             btnDownload.setOnClickListener {
                 val currentFile = file
-                lifecycleScope.launch {
-                    val success = withContext(Dispatchers.IO) {
-                        MediaUtils.saveToGallery(this@DetailWorkActivity, currentFile, isPhoto)
+                checkMediaPermissionAndDownload {
+                    lifecycleScope.launch {
+                        val success = withContext(Dispatchers.IO) {
+                            MediaUtils.saveToGallery(this@DetailWorkActivity, currentFile, isPhoto)
+                        }
+                        Toast.makeText(
+                            this@DetailWorkActivity,
+                            if (success) getString(R.string.download_success)
+                            else getString(R.string.download_failed),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-                    Toast.makeText(
-                        this@DetailWorkActivity,
-                        if (success) getString(R.string.download_success)
-                        else getString(R.string.download_failed),
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
             }
 
@@ -115,11 +177,14 @@ class DetailWorkActivity : BaseActivity() {
                 } else {
                     if (exoPlayerHelper.getPLayer()?.playbackState == Player.STATE_ENDED || binding.sbVideo.progress == binding.sbVideo.max) {
                         exoPlayerHelper.seekTo(0)
+                        viewModel.updateCurrentProgress(0)
                         viewModel.updateCounterTime(getString(R.string.start_time))
                     }
                     btnPlay.setImageResource(R.drawable.ic_gradient_pause)
                     exoPlayerHelper.play()
+                    handler.post(updateProgressRunnable)
                 }
+                updateNavButtonsState()
             }
 
             sbVideo.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -144,20 +209,31 @@ class DetailWorkActivity : BaseActivity() {
 
             btnNext.setOnClickListener {
                 val currentPos = exoPlayerHelper.getCurrentPosition()
+                val duration = exoPlayerHelper.getDuration()
                 val nextPos = currentPos + 500
-                if (nextPos > exoPlayerHelper.getDuration()) return@setOnClickListener
-                exoPlayerHelper.seekTo(nextPos)
-                viewModel.updateCurrentProgress(nextPos.toInt())
-                viewModel.updateCounterTime(TransferUtils.formatDuration(nextPos))
+                if (duration in 1..nextPos) {
+                    exoPlayerHelper.seekTo(duration)
+                    viewModel.updateCurrentProgress(duration.toInt())
+                    viewModel.updateCounterTime(TransferUtils.formatDuration(duration))
+                } else {
+                    exoPlayerHelper.seekTo(nextPos)
+                    viewModel.updateCurrentProgress(nextPos.toInt())
+                    viewModel.updateCounterTime(TransferUtils.formatDuration(nextPos))
+                }
             }
 
             btnPrevious.setOnClickListener {
                 val currentPos = exoPlayerHelper.getCurrentPosition()
                 val previousPos = currentPos - 500
-                if (previousPos < 0) return@setOnClickListener
-                exoPlayerHelper.seekTo(previousPos)
-                viewModel.updateCurrentProgress(previousPos.toInt())
-                viewModel.updateCounterTime(TransferUtils.formatDuration(previousPos))
+                if (previousPos <= 0) {
+                    exoPlayerHelper.seekTo(0)
+                    viewModel.updateCurrentProgress(0)
+                    viewModel.updateCounterTime(TransferUtils.formatDuration(0))
+                } else {
+                    exoPlayerHelper.seekTo(previousPos)
+                    viewModel.updateCurrentProgress(previousPos.toInt())
+                    viewModel.updateCounterTime(TransferUtils.formatDuration(previousPos))
+                }
             }
         }
     }
@@ -203,12 +279,17 @@ class DetailWorkActivity : BaseActivity() {
                     if (duration != C.TIME_UNSET) {
                         binding.sbVideo.max = duration.toInt()
                         binding.tvTotalTime.text = TransferUtils.formatDuration(duration)
+                        updateNavButtonsState()
                         handler.removeCallbacks(updateProgressRunnable)
                         handler.post(updateProgressRunnable)
                     }
                 } else if (playbackState == Player.STATE_ENDED) {
                     binding.btnPlay.setImageResource(R.drawable.ic_gradient_play)
                     binding.sbVideo.progress = binding.sbVideo.max
+                    updateNavButtonsState(
+                        exoPlayerHelper.getDuration(),
+                        exoPlayerHelper.getDuration()
+                    )
                     handler.removeCallbacks(updateProgressRunnable)
                 }
             }
@@ -224,6 +305,26 @@ class DetailWorkActivity : BaseActivity() {
                 Log.e("DetailWorkActivity", "onPlayerError: $error")
             }
         })
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (!isPhoto) {
+            wasPlayingBeforePause = exoPlayerHelper.isPlaying()
+            exoPlayerHelper.pause()
+            handler.removeCallbacks(updateProgressRunnable)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!isPhoto) {
+            // Cập nhật UI về trạng thái dừng phát
+            binding.btnPlay.setImageResource(R.drawable.ic_gradient_play)
+            val currentPos = exoPlayerHelper.getCurrentPosition()
+            viewModel.updateCurrentProgress(currentPos.toInt())
+            viewModel.updateCounterTime(TransferUtils.formatDuration(currentPos))
+        }
     }
 
     override fun onDestroy() {

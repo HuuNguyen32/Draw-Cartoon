@@ -40,4 +40,20 @@ class UserPreferences(context: Context) {
     fun isMediaAskedBefore(): Boolean {
         return sharedPreferences.getBoolean("media_asked_before", false)
     }
+
+    fun setTotalUseApp(total: Int) {
+        editor.putInt("total_use_app", total).apply()
+    }
+
+    fun getTotalUseApp(): Int {
+        return sharedPreferences.getInt("total_use_app", 0)
+    }
+
+    fun setRateApp(isRate: Boolean) {
+        editor.putBoolean("rate_app", isRate).apply()
+    }
+
+    fun isRateApp(): Boolean {
+        return sharedPreferences.getBoolean("rate_app", false)
+    }
 }

@@ -22,6 +22,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        LanguageUtils.setLocale(this, UserPreferences(this).getLanguage() ?: "en")
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
 
@@ -42,15 +43,15 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val savedLang = UserPreferences(this).getLanguage() ?: "en"
-        val currentLang = resources.configuration.locales[0].language
-        if (savedLang != currentLang) {
-            val intent = intent
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-            finish()
-            overridePendingTransition(0, 0)
-            startActivity(intent)
-            overridePendingTransition(0, 0)
-        }
+//        val savedLang = UserPreferences(this).getLanguage() ?: "en"
+//        val currentLang = resources.configuration.locales[0].language
+//        if (savedLang != currentLang) {
+//            val intent = intent
+//            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+//            finish()
+//            overridePendingTransition(0, 0)
+//            startActivity(intent)
+//            overridePendingTransition(0, 0)
+//        }
     }
 }

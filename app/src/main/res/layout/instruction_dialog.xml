@@ -57,7 +57,7 @@
         android:maxHeight="3dp"
         android:minHeight="2dp"
         android:progress="0"
-        android:progressDrawable="@drawable/custom_seekbar_bg"
+        android:progressDrawable="@drawable/white_seekbar_bg"
         android:thumb="@drawable/custom_seekbar_thumb"
         app:layout_constraintBottom_toBottomOf="@id/cv_player"
         app:layout_constraintEnd_toEndOf="@id/cv_player"

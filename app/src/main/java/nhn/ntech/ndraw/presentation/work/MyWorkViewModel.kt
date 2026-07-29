@@ -58,4 +58,12 @@ class MyWorkViewModel : ViewModel() {
             onCompletion()
         }
     }
+
+    fun toggleSelectMore() {
+        viewModelScope.launch {
+            _uiState.update { state ->
+                state.copy(isSelectMore = !state.isSelectMore)
+            }
+        }
+    }
 }
