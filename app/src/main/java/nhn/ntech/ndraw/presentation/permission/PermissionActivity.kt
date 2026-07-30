@@ -17,6 +17,7 @@ import nhn.ntech.ndraw.BaseActivity
 import nhn.ntech.ndraw.presentation.home.MainActivity
 import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.databinding.ActivityPermissionBinding
+import nhn.ntech.ndraw.domain.prefs.UserPreferences
 import nhn.ntech.ndraw.ext.setTextColor
 import nhn.ntech.ndraw.ext.setTextGradientColor
 
@@ -26,6 +27,7 @@ class PermissionActivity : BaseActivity() {
 
     private lateinit var binding: ActivityPermissionBinding
     private lateinit var viewModel: PermissionViewModel
+    private val userPreferences by lazy { UserPreferences(this) }
 
     companion object {
         private const val REQUEST_MEDIA_PERMISSION = 100
@@ -94,6 +96,7 @@ class PermissionActivity : BaseActivity() {
         }
 
         binding.btnContinue.setOnClickListener {
+            userPreferences.isPermissionScreenVisited(true)
             startActivity(Intent(this, MainActivity::class.java))
             finishAffinity()
         }

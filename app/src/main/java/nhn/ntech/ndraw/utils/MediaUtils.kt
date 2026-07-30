@@ -15,6 +15,9 @@ import java.io.FileOutputStream
 
 object MediaUtils {
 
+    private var lastShareTime: Long = 0L
+    private const val SHARE_DEBOUNCE_MS = 1000L
+
     /**
      * Save a file (image or video) to the device's public gallery.
      * - API 29+: Uses MediaStore + ContentResolver.
@@ -101,6 +104,10 @@ object MediaUtils {
      * Share a single file via Intent.ACTION_SEND.
      */
     fun shareFile(context: Context, file: File, isPhoto: Boolean) {
+        val now = System.currentTimeMillis()
+        if (now - lastShareTime < SHARE_DEBOUNCE_MS) return
+        lastShareTime = now
+
         val uri = getFileProviderUri(context, file) ?: return
         val mimeType = if (isPhoto) getMimeTypeForImage(file) else getMimeTypeForVideo(file)
 
@@ -118,6 +125,11 @@ object MediaUtils {
      */
     fun shareFiles(context: Context, files: List<File>, isPhoto: Boolean) {
         if (files.isEmpty()) return
+
+        val now = System.currentTimeMillis()
+        if (now - lastShareTime < SHARE_DEBOUNCE_MS) return
+        lastShareTime = now
+
         if (files.size == 1) {
             shareFile(context, files.first(), isPhoto)
             return

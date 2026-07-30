@@ -36,7 +36,7 @@ class MainAdapter(
     override fun onBindViewHolder(holder: MainAdapter.MainViewHolder, position: Int) {
         val item = items[position]
 
-        val heightPx = when (position % 3) {
+        val heightPx = when (position % 4) {
             0 -> {
                 val screenWidth = holder.itemView.context.resources.displayMetrics.widthPixels
                 screenWidth / 2 - TransferUtils.dpToPx(holder.itemView.context, 16)

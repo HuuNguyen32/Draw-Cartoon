@@ -25,8 +25,17 @@ abstract class BaseActivity : AppCompatActivity() {
         LanguageUtils.setLocale(this, UserPreferences(this).getLanguage() ?: "en")
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = false
+        hideSystemUI()
+    }
 
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) hideSystemUI()
+    }
+
+    private fun hideSystemUI() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(false)
             window.insetsController?.let { controller ->
                 controller.hide(WindowInsets.Type.navigationBars())
                 controller.systemBarsBehavior =
@@ -36,7 +45,9 @@ abstract class BaseActivity : AppCompatActivity() {
             @Suppress("DEPRECATION")
             window.decorView.systemUiVisibility = (
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
+                            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                     )
         }
     }

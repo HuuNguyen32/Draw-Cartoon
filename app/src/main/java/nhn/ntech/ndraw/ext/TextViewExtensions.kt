@@ -8,6 +8,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
@@ -71,4 +72,14 @@ fun TextView.setTextColor(
 
 fun TextView.clearTextShader() {
     paint.shader = null
+}
+
+private var lastClick: Long = 0L
+
+fun View.tap(delay: Long = 200, onClick: () -> Unit) {
+    val currentTime = System.currentTimeMillis()
+    if (currentTime - lastClick > delay) {
+        this.setOnClickListener { onClick() }
+        lastClick = currentTime
+    }
 }

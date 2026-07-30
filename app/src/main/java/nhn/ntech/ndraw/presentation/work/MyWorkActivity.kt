@@ -2,6 +2,7 @@ package nhn.ntech.ndraw.presentation.work
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -14,9 +15,10 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import kotlinx.coroutines.launch
 import androidx.activity.result.contract.ActivityResultContracts
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import nhn.ntech.ndraw.BaseActivity
 import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.consts.Const
@@ -27,6 +29,7 @@ import nhn.ntech.ndraw.presentation.detail.DetailWorkActivity
 import nhn.ntech.ndraw.presentation.home.MainActivity
 import nhn.ntech.ndraw.utils.DialogUtils
 import nhn.ntech.ndraw.utils.MediaUtils
+import nhn.ntech.ndraw.utils.ToastUtils
 import java.io.File
 import kotlin.jvm.java
 
@@ -61,16 +64,20 @@ class MyWorkActivity : BaseActivity() {
         }
 
     private fun checkMediaPermissionAndDownload(onPermissionGranted: () -> Unit) {
-        PermissionManager.checkMediaPermission(
-            activity = this,
-            onGranted = {
-                onPermissionGranted()
-            },
-            onLaunchLauncher = {
-                pendingDownloadAction = onPermissionGranted
-                mediaPermissionLauncher.launch(PermissionManager.photoPermission)
-            }
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            onPermissionGranted()
+        } else {
+            PermissionManager.checkMediaPermission(
+                activity = this,
+                onGranted = {
+                    onPermissionGranted()
+                },
+                onLaunchLauncher = {
+                    pendingDownloadAction = onPermissionGranted
+                    mediaPermissionLauncher.launch(PermissionManager.photoPermission)
+                }
+            )
+        }
     }
 
     private fun downloadFiles(files: List<File>) {
@@ -78,17 +85,16 @@ class MyWorkActivity : BaseActivity() {
             var successCount = 0
             for (file in files) {
                 val success =
-                    kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+                    withContext(Dispatchers.IO) {
                         MediaUtils.saveToGallery(this@MyWorkActivity, file, isPhotoSelected)
                     }
                 if (success) successCount++
             }
-            Toast.makeText(
-                this@MyWorkActivity,
-                if (successCount > 0) getString(R.string.download_success)
+            ToastUtils.showToast(
+                context = this@MyWorkActivity,
+                message = if (successCount > 0) getString(R.string.download_success)
                 else getString(R.string.download_failed),
-                Toast.LENGTH_SHORT
-            ).show()
+            )
         }
     }
 
@@ -141,9 +147,9 @@ class MyWorkActivity : BaseActivity() {
 
         updateTabUI(isPhoto)
 
-        val selectMoreSrc =
-            if (state.isSelectMore) R.drawable.ic_fill_select_more else R.drawable.ic_select_more
-        btnSelectMore.setImageResource(selectMoreSrc)
+//        val selectMoreSrc =
+//            if (state.isSelectMore) R.drawable.ic_fill_select_more else R.drawable.ic_select_more
+//        btnSelectMore.setImageResource(selectMoreSrc)
 
         val isEmpty = currentList.isEmpty()
 
@@ -219,7 +225,7 @@ class MyWorkActivity : BaseActivity() {
         btnSelectMore.setOnClickListener {
             if (::myWorkAdapter.isInitialized) {
                 myWorkAdapter.selectAll()
-                viewModel.toggleSelectMore()
+//                viewModel.toggleSelectMore()
             }
         }
 
@@ -258,14 +264,14 @@ class MyWorkActivity : BaseActivity() {
             if (::myWorkAdapter.isInitialized) {
                 val selectedFiles = myWorkAdapter.getSelectedItems()
                 if (selectedFiles.isEmpty()) {
-                    Toast.makeText(
-                        this@MyWorkActivity,
-                        getString(R.string.no_item_selected_to_download_des),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    ToastUtils.showToast(
+                        context = this@MyWorkActivity,
+                        message = getString(R.string.no_item_selected_to_download_des)
+                    )
                     return@setOnClickListener
                 }
                 checkMediaPermissionAndDownload {
+                    exitFromSelectMode()
                     downloadFiles(selectedFiles)
                 }
             }
@@ -275,13 +281,13 @@ class MyWorkActivity : BaseActivity() {
             if (::myWorkAdapter.isInitialized) {
                 val selectedFiles = myWorkAdapter.getSelectedItems()
                 if (selectedFiles.isEmpty()) {
-                    Toast.makeText(
-                        this@MyWorkActivity,
-                        getString(R.string.no_item_selected_to_share_des),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    ToastUtils.showToast(
+                        context = this@MyWorkActivity,
+                        message = getString(R.string.no_item_selected_to_share_des),
+                    )
                     return@setOnClickListener
                 }
+                exitFromSelectMode()
                 MediaUtils.shareFiles(this@MyWorkActivity, selectedFiles, isPhotoSelected)
             }
         }
@@ -308,7 +314,11 @@ class MyWorkActivity : BaseActivity() {
                 updateSelectionUI(isSelectionMode)
             },
             onSelectionChange = { count ->
-
+                val isAllSelected =
+                    count > 0 && ::myWorkAdapter.isInitialized && count == myWorkAdapter.itemCount
+                val selectMoreSrc =
+                    if (isAllSelected) R.drawable.ic_fill_select_more else R.drawable.ic_select_more
+                binding.btnSelectMore.setImageResource(selectMoreSrc)
             }
         )
         binding.rvMyWork.apply {

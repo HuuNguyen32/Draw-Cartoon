@@ -17,12 +17,28 @@ import nhn.ntech.ndraw.utils.DialogUtils
 import nhn.ntech.ndraw.ext.policy
 import nhn.ntech.ndraw.ext.reviewApp
 import nhn.ntech.ndraw.ext.shareApp
+import nhn.ntech.ndraw.utils.ToastUtils
 
 class SettingActivity : BaseActivity() {
 
     private lateinit var binding: ActivitySettingBinding
     private lateinit var adapter: SettingAdapter
     private val userPreferences by lazy { UserPreferences(this) }
+    private val items: List<SettingItem>
+        get() = if (userPreferences.isRateApp()) {
+            listOf(
+                SettingItem(1, R.drawable.ic_language, getString(R.string.language_title)),
+                SettingItem(3, R.drawable.ic_share, getString(R.string.share_app_title)),
+                SettingItem(4, R.drawable.ic_sheild, getString(R.string.privacy_title))
+            )
+        } else {
+            listOf(
+                SettingItem(1, R.drawable.ic_language, getString(R.string.language_title)),
+                SettingItem(2, R.drawable.ic_rate, getString(R.string.rate_title)),
+                SettingItem(3, R.drawable.ic_share, getString(R.string.share_app_title)),
+                SettingItem(4, R.drawable.ic_sheild, getString(R.string.privacy_title))
+            )
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,12 +57,6 @@ class SettingActivity : BaseActivity() {
     }
 
     private fun setAdapter() {
-        val items = listOf(
-            SettingItem(1, R.drawable.ic_language, getString(R.string.language_title)),
-            SettingItem(2, R.drawable.ic_rate, getString(R.string.rate_title)),
-            SettingItem(3, R.drawable.ic_share, getString(R.string.share_app_title)),
-            SettingItem(4, R.drawable.ic_sheild, getString(R.string.privacy_title))
-        )
         adapter = SettingAdapter(items) {
             when (it.id) {
                 1 -> {
@@ -58,18 +68,19 @@ class SettingActivity : BaseActivity() {
                 2 -> {
                     DialogUtils.createRateDialog(this) { rate ->
                         when (rate) {
-                            0 -> Toast.makeText(
-                                this,
-                                getString(R.string.please_select_stars_des),
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            0 -> ToastUtils.showToast(
+                                context = this@SettingActivity,
+                                message = getString(R.string.please_select_stars_des),
+                            )
 
                             in 1..3 -> {
                                 userPreferences.setRateApp(true)
+                                adapter.setData(items)
                             }
 
                             else -> {
                                 userPreferences.setRateApp(true)
+                                adapter.setData(items)
                                 reviewApp(this, false)
                             }
                         }

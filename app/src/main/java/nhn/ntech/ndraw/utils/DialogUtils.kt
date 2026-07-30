@@ -25,6 +25,8 @@ import nhn.ntech.ndraw.databinding.InstructionDialogBinding
 import nhn.ntech.ndraw.databinding.RateDialogBinding
 import nhn.ntech.ndraw.ext.setTextGradientColor
 import nhn.ntech.ndraw.helper.ExoPlayerHelper
+import nhn.ntech.ndraw.presentation.home.MainActivity
+import kotlin.system.exitProcess
 
 class DialogUtils {
     companion object {
@@ -51,7 +53,7 @@ class DialogUtils {
             val binding = RateDialogBinding.inflate(LayoutInflater.from(context))
             dialog.setContentView(binding.root)
             dialog.window?.setBackgroundDrawableResource(R.drawable.rate_dialog_bg)
-            dialog.setCanceledOnTouchOutside(true)
+            dialog.setCanceledOnTouchOutside(false)
             with(binding) {
                 ivRate.setImageResource(R.drawable.img_rate_0)
                 tvTitle.text = context.getString(R.string.no_star_title)
@@ -105,7 +107,11 @@ class DialogUtils {
                 }
 
                 btnExit.setOnClickListener {
+                    ToastUtils.cancelAllToast()
                     dialog.dismiss()
+                    if (rbRate.rating.toInt() == 0 && context is MainActivity) {
+                        context.finishAffinity()
+                    }
                 }
             }
             dialog.show()

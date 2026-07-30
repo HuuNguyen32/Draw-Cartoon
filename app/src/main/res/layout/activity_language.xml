@@ -21,7 +21,7 @@
 
     <TextView
         android:id="@+id/tv_title"
-        style="@style/sketch_block_24"
+        style="@style/UTM_Azuki_26"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"

@@ -38,6 +38,7 @@ import nhn.ntech.ndraw.domain.prefs.UserPreferences
 import nhn.ntech.ndraw.ext.reviewApp
 import nhn.ntech.ndraw.helper.NetworkObserver
 import nhn.ntech.ndraw.utils.LanguageUtils
+import nhn.ntech.ndraw.utils.ToastUtils
 
 class MainActivity : BaseActivity() {
 
@@ -338,11 +339,10 @@ class MainActivity : BaseActivity() {
         if (!userPreferences.isRateApp() && userPreferences.getTotalUseApp() % 2 == 0) {
             DialogUtils.createRateDialog(this@MainActivity) { rate ->
                 when (rate) {
-                    0 -> Toast.makeText(
-                        this,
-                        getString(R.string.please_select_stars_des),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    0 -> ToastUtils.showToast(
+                        context = this@MainActivity,
+                        message = getString(R.string.please_select_stars_des),
+                    )
 
                     in 1..3 -> {
                         userPreferences.setRateApp(true)

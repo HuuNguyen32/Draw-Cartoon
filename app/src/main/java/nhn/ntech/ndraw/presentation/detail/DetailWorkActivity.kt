@@ -1,6 +1,6 @@
 package nhn.ntech.ndraw.presentation.detail
 
-import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -18,10 +18,6 @@ import androidx.media3.common.C
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -30,10 +26,12 @@ import nhn.ntech.ndraw.BaseActivity
 import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.consts.Const
 import nhn.ntech.ndraw.databinding.ActivityDetailWorkBinding
+import nhn.ntech.ndraw.ext.tap
 import nhn.ntech.ndraw.helper.ExoPlayerHelper
 import nhn.ntech.ndraw.helper.PermissionManager
 import nhn.ntech.ndraw.utils.DialogUtils
 import nhn.ntech.ndraw.utils.MediaUtils
+import nhn.ntech.ndraw.utils.ToastUtils
 import nhn.ntech.ndraw.utils.TransferUtils
 import java.io.File
 
@@ -56,16 +54,20 @@ class DetailWorkActivity : BaseActivity() {
         }
 
     private fun checkMediaPermissionAndDownload(onPermissionGranted: () -> Unit) {
-        PermissionManager.checkMediaPermission(
-            activity = this,
-            onGranted = {
-                onPermissionGranted()
-            },
-            onLaunchLauncher = {
-                pendingDownloadAction = onPermissionGranted
-                mediaPermissionLauncher.launch(PermissionManager.photoPermission)
-            }
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            onPermissionGranted()
+        } else {
+            PermissionManager.checkMediaPermission(
+                activity = this,
+                onGranted = {
+                    onPermissionGranted()
+                },
+                onLaunchLauncher = {
+                    pendingDownloadAction = onPermissionGranted
+                    mediaPermissionLauncher.launch(PermissionManager.photoPermission)
+                }
+            )
+        }
     }
 
     private lateinit var binding: ActivityDetailWorkBinding
@@ -155,17 +157,16 @@ class DetailWorkActivity : BaseActivity() {
                         val success = withContext(Dispatchers.IO) {
                             MediaUtils.saveToGallery(this@DetailWorkActivity, currentFile, isPhoto)
                         }
-                        Toast.makeText(
-                            this@DetailWorkActivity,
-                            if (success) getString(R.string.download_success)
+                        ToastUtils.showToast(
+                            context = this@DetailWorkActivity,
+                            message = if (success) getString(R.string.download_success)
                             else getString(R.string.download_failed),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        )
                     }
                 }
             }
 
-            btnShare.setOnClickListener {
+            btnShare.tap(1000L) {
                 val currentFile = file
                 MediaUtils.shareFile(this@DetailWorkActivity, currentFile, isPhoto)
             }

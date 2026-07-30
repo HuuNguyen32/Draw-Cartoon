@@ -6,9 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import nhn.ntech.ndraw.databinding.SettingItemBinding
 
 class SettingAdapter(
-    private val items: List<SettingItem>,
-    private val onItemClick: (SettingItem) -> Unit
-) : RecyclerView.Adapter<SettingAdapter.SettingViewHolder>(){
+    private var items: List<SettingItem>,
+    private val onItemClick: (SettingItem) -> Unit,
+) : RecyclerView.Adapter<SettingAdapter.SettingViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int,
@@ -27,6 +27,11 @@ class SettingAdapter(
     }
 
     override fun getItemCount(): Int = items.size
+
+    fun setData(newItems: List<SettingItem>) {
+        items = newItems
+        notifyDataSetChanged()
+    }
 
     class SettingViewHolder(val binding: SettingItemBinding) : RecyclerView.ViewHolder(binding.root)
 }

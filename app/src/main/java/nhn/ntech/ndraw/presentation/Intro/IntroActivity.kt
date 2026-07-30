@@ -48,7 +48,6 @@ class IntroActivity : BaseActivity() {
                 updateIndicator(currentItem + 1)
             } else {
                 if (!viewModel.getPermissionVisited()) {
-                    viewModel.setPermissionVisited(true)
                     startActivity(Intent(this, PermissionActivity::class.java))
                     finish()
                 } else {
