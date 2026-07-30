@@ -36,12 +36,23 @@ class LanguageActivity : BaseActivity() {
             ViewModelProvider(owner = this, factory = factory)[LanguageViewModel::class.java]
         flow = intent.getIntExtra(Const.FLOW_TAG, -1)
         setPaddingScreen()
+        initView()
         setAdapter()
-        initData()
+        observerState()
         setOnClickListener()
     }
 
-    private fun initData() {
+    private fun initView() {
+        if (flow == Const.FLOW_SETTING_CODE) {
+            binding.btnBack.visibility = View.VISIBLE
+            binding.tvTitle.textAlignment = View.TEXT_ALIGNMENT_CENTER
+        } else {
+            binding.btnBack.visibility = View.GONE
+            binding.tvTitle.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+        }
+    }
+
+    private fun observerState() {
         viewModel.language.observe(this) { language ->
             languageSelected = language
             Log.d("Language", language.name)
@@ -49,6 +60,7 @@ class LanguageActivity : BaseActivity() {
     }
 
     private fun setOnClickListener() {
+        binding.btnBack.setOnClickListener { finish() }
         binding.btnCheck.setOnClickListener {
             viewModel.saveLanguage(languageSelected)
             when (flow) {

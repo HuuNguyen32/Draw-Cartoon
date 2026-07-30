@@ -53,7 +53,6 @@ class SettingActivity : BaseActivity() {
                     val intent = Intent(this, LanguageActivity::class.java)
                     intent.putExtra(Const.FLOW_TAG, Const.FLOW_SETTING_CODE)
                     startActivity(intent)
-                    finish()
                 }
 
                 2 -> {
