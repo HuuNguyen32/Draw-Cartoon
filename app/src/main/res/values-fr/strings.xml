@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">NDraw</string>
-    <string name="splash_title">Draw Cartoon: AR Drawing</string>
-    <string name="splash_hint_bottom">Cette action peut contenir des publicités.</string>
+    <string name="app_name">Draw Cartoon: AR Drawing</string>
+    <string name="splash_title">Draw Cartoon: AR\nDrawing</string>
+    <string name="splash_hint_bottom">Cette application peut contenir des publicités</string>
     <string name="intro_hint">intro</string>
     <string name="intro_1_title">Esquisse au crayon de toute image</string>
     <string name="intro_2_title">Créer une vidéo de dessin</string>
@@ -47,7 +47,7 @@
     <string name="share_title">Partager</string>
 
     <string name="delete_title">Supprimer</string>
-    <string name="delete_description">Êtes-vous sûr de vouloir supprimer les éléments sélectionnés ?</string>
+    <string name="delete_description">Voulez-vous supprimer cet élément ?</string>
     <string name="success_delete">Supprimé avec succès</string>
     <string name="instruction_title">Instructions</string>
     <string name="ok_title">OK</string>
@@ -60,6 +60,7 @@
 
     <string name="media_permission_error_message">Autorisation média refusée</string>
     <string name="camera_permission_error_message">Autorisation caméra refusée</string>
+    <string name="camera_permission_success_message">Autorisation caméra accordée</string>
     <string name="no_internet_connected_message">Vous êtes hors ligne. Veuillez activer le Wi-Fi ou les données mobiles pour continuer</string>
     <string name="internet_connected_message">Internet connecté</string>
     <string name="create_image_fail_message">Impossible de créer le fichier image</string>
@@ -78,4 +79,19 @@
 
     <string name="view_title">Voir</string>
     <string name="play_media_error_message">Impossible de lire ce média %1$s</string>
+
+    <string name="permission_settings_title">Paramètres d\'autorisation</string>
+    <string name="permission_settings_des">L\'application a besoin de cette autorisation. Veuillez activer les autorisations dans les Paramètres</string>
+    <string name="cancel_title">Annuler</string>
+
+    <string name="please_select_stars_des">Veuillez sélectionner le nombre d\'étoiles</string>
+    <string name="no_item_selected_to_delete_des">Sélectionnez au moins un élément à supprimer</string>
+    <string name="no_item_selected_to_download_des">Sélectionnez au moins un élément à télécharger</string>
+    <string name="no_item_selected_to_share_des">Sélectionnez au moins un élément à partager</string>
+
+    <string name="yes_title">Oui</string>
+    <string name="camera_permission_settings_des">L\'application a besoin de l\'autorisation de la caméra avant d\'effectuer l\'action suivante</string>
+    <string name="permission_granted">Autorisation accordée</string>
+    <string name="permission_denied">Autorisation refusée</string>
+    <string name="please_enable_permissions_in_settings">Veuillez activer les autorisations dans les Paramètres</string>
 </resources>

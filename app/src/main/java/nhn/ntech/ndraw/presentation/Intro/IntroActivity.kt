@@ -15,6 +15,7 @@ import nhn.ntech.ndraw.BaseActivity
 import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.databinding.ActivityIntroBinding
 import nhn.ntech.ndraw.domain.prefs.UserPreferences
+import nhn.ntech.ndraw.ext.navigateTo
 import nhn.ntech.ndraw.presentation.home.MainActivity
 import nhn.ntech.ndraw.presentation.permission.PermissionActivity
 import nhn.ntech.ndraw.ext.setTextGradientColor
@@ -48,11 +49,9 @@ class IntroActivity : BaseActivity() {
                 updateIndicator(currentItem + 1)
             } else {
                 if (!viewModel.getPermissionVisited()) {
-                    startActivity(Intent(this, PermissionActivity::class.java))
-                    finish()
+                    navigateTo<PermissionActivity>(finishCurrent = true)
                 } else {
-                    startActivity(Intent(this, MainActivity::class.java))
-                    finishAffinity()
+                    navigateTo<MainActivity>(finishAffinity = true)
                 }
             }
         }

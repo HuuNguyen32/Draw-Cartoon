@@ -31,10 +31,10 @@ import nhn.ntech.ndraw.presentation.sketching.SketchingActivity
 import nhn.ntech.ndraw.presentation.work.MyWorkActivity
 import nhn.ntech.ndraw.utils.DialogUtils
 import nhn.ntech.ndraw.helper.PermissionManager
-
 import android.view.View
 import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.domain.prefs.UserPreferences
+import nhn.ntech.ndraw.ext.navigateTo
 import nhn.ntech.ndraw.ext.reviewApp
 import nhn.ntech.ndraw.helper.NetworkObserver
 import nhn.ntech.ndraw.utils.LanguageUtils
@@ -201,7 +201,7 @@ class MainActivity : BaseActivity() {
             }
 
             btnSetting.setOnClickListener {
-                startActivity(Intent(this@MainActivity, SettingActivity::class.java))
+                navigateTo<SettingActivity>()
             }
 
             btnCreate.setOnClickListener {
@@ -218,11 +218,11 @@ class MainActivity : BaseActivity() {
             }
 
             btnCategory.setOnClickListener {
-                startActivity(Intent(this@MainActivity, CategoryActivity::class.java))
+                navigateTo<CategoryActivity>()
             }
 
             btnMyWork.setOnClickListener {
-                startActivity(Intent(this@MainActivity, MyWorkActivity::class.java))
+                navigateTo<MyWorkActivity>()
             }
         }
     }
@@ -294,9 +294,9 @@ class MainActivity : BaseActivity() {
 
     private fun handleImageUri(uri: Uri) {
         Log.d("MainActivity", "handleImageUri: $uri")
-        val intent = Intent(this, SketchingActivity::class.java)
-        intent.putExtra(Const.IMAGE_URI_TAG, uri.toString())
-        startActivity(intent)
+        navigateTo<SketchingActivity>() {
+            putExtra(Const.IMAGE_URI_TAG, uri.toString())
+        }
     }
 
     private fun setPaddingScreen() {

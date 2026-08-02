@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Draw Cartoon: AR Drawing</string>
+
+    <string name="splash_title">Draw Cartoon: AR\nDrawing</string>
+    <string name="splash_hint_bottom">इस ऐप में विज्ञापन हो सकते हैं</string>
+    <string name="intro_hint">intro</string>
+    <string name="intro_1_title">किसी भी फोटो का पेंसिल स्केच बनाएं</string>
+    <string name="intro_2_title">ड्राइंग वीडियो बनाएं</string>
+    <string name="intro_3_title">विभिन्न टेम्पलेट्स</string>
+    <string name="btn_next">आगे</string>
+    <string name="btn_continue">जारी रखें</string>
+    <string name="permission_des">Draw Cartoon: AR Drawing को अपने डिवाइस पर\nफोटो, मीडिया और फ़ाइलों तक पहुंचने की अनुमति दें</string>
+    <string name="permission_des_bold">Draw Cartoon: AR Drawing</string>
+    <string name="media_title">मीडिया</string>
+    <string name="permission_title">अनुमति</string>
+    <string name="trending_title">ट्रेंडिंग</string>
+    <string name="draw_cartoon_title">कार्टून ड्रा करें</string>
+    <string name="setting_title">सेटिंग्स</string>
+    <string name="create_tv">बनाएं</string>
+    <string name="category_tv">श्रेणी</string>
+    <string name="my_work_tv">मेरा काम</string>
+
+    <string name="language_title">भाषा</string>
+    <string name="rate_title">हमें रेटिंग दें</string>
+    <string name="share_app_title">ऐप शेयर करें</string>
+    <string name="privacy_title">गोपनीयता नीति</string>
+    <string name="rate_btn_title">रेटिंग दें</string>
+    <string name="exit_title">बाहर निकलें</string>
+    <string name="from_camera_title">कैमरे से</string>
+    <string name="from_gallery_title">गैलरी से</string>
+
+    <string name="no_star_title">क्या आपको ऐप पसंद आया?</string>
+    <string name="one_to_three_star_title">अरे नहीं!</string>
+    <string name="four_five_start_title">हम भी आपसे प्यार करते हैं!</string>
+
+    <string name="no_star_des">हमें अपना अनुभव बताएं</string>
+    <string name="one_to_three_star_des">कृपया हमें अपनी प्रतिक्रिया दें</string>
+    <string name="four_five_start_des">आपकी प्रतिक्रिया के लिए धन्यवाद</string>
+
+    <string name="create_draw_title">ड्राइंग बनाएं</string>
+    <string name="camera_title">कैमरा</string>
+    <string name="photo_title">फोटो</string>
+    <string name="video_title">वीडियो</string>
+    <string name="no_photos_yet">अभी कोई फोटो नहीं है</string>
+    <string name="no_videos_yet">अभी कोई वीडियो नहीं है</string>
+    <string name="download_title">डाउनलोड करें</string>
+    <string name="share_title">शेयर करें</string>
+
+    <string name="delete_title">हटाएं</string>
+    <string name="delete_description">क्या आप इस आइटम को हटाना चाहते हैं?</string>
+    <string name="success_delete">सफलतापूर्वक हटाया गया</string>
+    <string name="instruction_title">निर्देश</string>
+    <string name="ok_title">ठीक है</string>
+
+    <string name="start_time">00:00</string>
+
+    <string name="download_success">गैलरी में सफलतापूर्वक सहेजा गया</string>
+    <string name="download_failed">गैलरी में सहेजने में विफल</string>
+    <string name="share_failed">इस फ़ाइल को शेयर करने में असमर्थ</string>
+
+    <string name="media_permission_error_message">मीडिया अनुमति अस्वीकृत</string>
+    <string name="camera_permission_error_message">कैमरा अनुमति अस्वीकृत</string>
+    <string name="camera_permission_success_message">कैमरा अनुमति स्वीकृत</string>
+    <string name="no_internet_connected_message">आप ऑफ़लाइन हैं। जारी रखने के लिए कृपया वाई-फाई या मोबाइल डेटा चालू करें</string>
+    <string name="internet_connected_message">इंटरनेट कनेक्ट हो गया</string>
+    <string name="create_image_fail_message">इमेज फ़ाइल नहीं बनाई जा सकी</string>
+    <string name="no_title">नहीं</string>
+
+    <string name="no_internet_title">कोई इंटरनेट कनेक्शन नहीं है</string>
+    <string name="open_settings_title">सेटिंग्स खोलें</string>
+    <string name="close_title">बंद करें</string>
+    <string name="unable_load_image_title">इमेज लोड करने में असमर्थ</string>
+    <string name="unable_load_image_message">इमेज लोड करने के लिए कृपया वाई-फाई या मोबाइल डेटा चालू करें</string>
+
+    <string name="saved_photo_title">फोटो सहेजी गई!</string>
+    <string name="saved_video_title">वीडियो सहेजा गया!</string>
+    <string name="saved_photo_des">आपकी फोटो \'मेरा काम\' में सफलतापूर्वक सहेजी गई है। अभी देखें</string>
+    <string name="saved_video_des">आपका वीडियो \'मेरा काम\' में सफलतापूर्वक सहेजा गया है। अभी देखें</string>
+
+    <string name="view_title">देखें</string>
+    <string name="play_media_error_message">इस मीडिया को चलाने में असमर्थ %1$s</string>
+
+    <string name="permission_settings_title">अनुमति सेटिंग्स</string>
+    <string name="permission_settings_des">ऐप को इस अनुमति की आवश्यकता है। कृपया सेटिंग्स में अनुमतियां सक्षम करें</string>
+    <string name="cancel_title">रद्द करें</string>
+
+    <string name="please_select_stars_des">कृपया सितारों की संख्या चुनें</string>
+    <string name="no_item_selected_to_delete_des">हटाने के लिए कम से कम एक आइटम चुनें</string>
+    <string name="no_item_selected_to_download_des">डाउनलोड करने के लिए कम से कम एक आइटम चुनें</string>
+    <string name="no_item_selected_to_share_des">शेयर करने के लिए कम से कम एक आइटम चुनें</string>
+
+    <string name="yes_title">हां</string>
+    <string name="camera_permission_settings_des">अगली कार्रवाई करने से पहले ऐप को कैमरा अनुमति की आवश्यकता है</string>
+    <string name="permission_granted">अनुमति दी गई</string>
+    <string name="permission_denied">अनुमति अस्वीकृत</string>
+    <string name="please_enable_permissions_in_settings">कृपया सेटिंग्स में अनुमतियां सक्षम करें</string>
+</resources>

@@ -1,8 +1,6 @@
 package nhn.ntech.ndraw.presentation.setting
 
-import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -12,6 +10,7 @@ import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.consts.Const
 import nhn.ntech.ndraw.databinding.ActivitySettingBinding
 import nhn.ntech.ndraw.domain.prefs.UserPreferences
+import nhn.ntech.ndraw.ext.navigateTo
 import nhn.ntech.ndraw.presentation.language.LanguageActivity
 import nhn.ntech.ndraw.utils.DialogUtils
 import nhn.ntech.ndraw.ext.policy
@@ -60,9 +59,9 @@ class SettingActivity : BaseActivity() {
         adapter = SettingAdapter(items) {
             when (it.id) {
                 1 -> {
-                    val intent = Intent(this, LanguageActivity::class.java)
-                    intent.putExtra(Const.FLOW_TAG, Const.FLOW_SETTING_CODE)
-                    startActivity(intent)
+                    navigateTo<LanguageActivity> {
+                        putExtra(Const.FLOW_TAG, Const.FLOW_SETTING_CODE)
+                    }
                 }
 
                 2 -> {

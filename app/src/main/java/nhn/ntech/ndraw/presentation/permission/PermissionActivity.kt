@@ -18,6 +18,7 @@ import nhn.ntech.ndraw.presentation.home.MainActivity
 import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.databinding.ActivityPermissionBinding
 import nhn.ntech.ndraw.domain.prefs.UserPreferences
+import nhn.ntech.ndraw.ext.navigateTo
 import nhn.ntech.ndraw.ext.setTextColor
 import nhn.ntech.ndraw.ext.setTextGradientColor
 
@@ -97,8 +98,7 @@ class PermissionActivity : BaseActivity() {
 
         binding.btnContinue.setOnClickListener {
             userPreferences.isPermissionScreenVisited(true)
-            startActivity(Intent(this, MainActivity::class.java))
-            finishAffinity()
+            navigateTo<MainActivity>(finishAffinity = true)
         }
     }
 
@@ -147,11 +147,11 @@ class PermissionActivity : BaseActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_MEDIA_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.permission_granted), Toast.LENGTH_SHORT).show()
                 binding.switchPermission.isChecked = true
                 viewModel.setPermissionGranted(true)
             } else {
-                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
                 binding.switchPermission.isChecked = false
                 viewModel.setPermissionGranted(false)
             }
@@ -159,11 +159,11 @@ class PermissionActivity : BaseActivity() {
 
         if (requestCode == REQUEST_CAMERA_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.permission_granted), Toast.LENGTH_SHORT).show()
                 binding.cameraSwitchPermission.isChecked = true
                 viewModel.setCameraPermissionGranted(true)
             } else {
-                Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
                 binding.cameraSwitchPermission.isChecked = false
                 viewModel.setCameraPermissionGranted(false)
             }

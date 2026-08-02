@@ -25,6 +25,7 @@ import nhn.ntech.ndraw.data.implemention.ItemRepositoryImpl
 import nhn.ntech.ndraw.data.local.AppDatabase
 import nhn.ntech.ndraw.databinding.ActivityCategoryBinding
 import nhn.ntech.ndraw.domain.state.UiState
+import nhn.ntech.ndraw.ext.navigateTo
 import nhn.ntech.ndraw.helper.NetworkObserver
 import nhn.ntech.ndraw.presentation.home.MainAdapter
 import nhn.ntech.ndraw.presentation.home.SpacingItemDecoration
@@ -219,9 +220,9 @@ class CategoryActivity : BaseActivity() {
     }
 
     private fun handleImageUri(uri: Uri) {
-        val intent = Intent(this, SketchingActivity::class.java)
-        intent.putExtra(Const.IMAGE_URI_TAG, uri.toString())
-        startActivity(intent)
+        navigateTo<SketchingActivity> {
+            putExtra(Const.IMAGE_URI_TAG, uri.toString())
+        }
     }
 
     private fun checkCameraPermission(item: Uri) {

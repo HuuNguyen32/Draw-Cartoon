@@ -1,7 +1,6 @@
 package nhn.ntech.ndraw.presentation.sketching
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -10,7 +9,6 @@ import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.registerForActivityResult
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -38,6 +36,7 @@ import nhn.ntech.ndraw.BaseActivity
 import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.utils.DialogUtils
 import nhn.ntech.ndraw.ext.clearTextShader
+import nhn.ntech.ndraw.ext.navigateTo
 import nhn.ntech.ndraw.helper.PermissionManager
 import nhn.ntech.ndraw.presentation.work.MyWorkActivity
 import java.io.File
@@ -152,11 +151,10 @@ class SketchingActivity : BaseActivity() {
                         getString(R.string.view_title),
                         getString(R.string.close_title),
                         onConfirm = {
-                            val intent = Intent(this@SketchingActivity, MyWorkActivity::class.java)
-                            intent.putExtra(Const.FROM_SKETCHING, true)
-                            intent.putExtra(Const.IS_PHOTO_FROM_SKETCHING, true)
-                            startActivity(intent)
-                            finish()
+                            navigateTo<MyWorkActivity>(finishCurrent = true) {
+                                putExtra(Const.FROM_SKETCHING, true)
+                                putExtra(Const.IS_PHOTO_FROM_SKETCHING, true)
+                            }
                         }
                     )
                 }
@@ -214,12 +212,10 @@ class SketchingActivity : BaseActivity() {
                                 getString(R.string.view_title),
                                 getString(R.string.close_title),
                                 onConfirm = {
-                                    val intent =
-                                        Intent(this@SketchingActivity, MyWorkActivity::class.java)
-                                    intent.putExtra(Const.FROM_SKETCHING, true)
-                                    intent.putExtra(Const.IS_PHOTO_FROM_SKETCHING, false)
-                                    startActivity(intent)
-                                    finish()
+                                    navigateTo<MyWorkActivity>(finishCurrent = true) {
+                                        putExtra(Const.FROM_SKETCHING, true)
+                                        putExtra(Const.IS_PHOTO_FROM_SKETCHING, false)
+                                    }
                                 }
                             )
                         } else {

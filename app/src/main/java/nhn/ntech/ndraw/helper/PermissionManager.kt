@@ -141,7 +141,7 @@ object PermissionManager {
     fun goToSettings(context: Context) {
         Toast.makeText(
             context,
-            "Please enable permissions in Settings",
+            context.getString(R.string.please_enable_permissions_in_settings),
             Toast.LENGTH_SHORT
         ).show()
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {

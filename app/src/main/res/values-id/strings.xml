@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Draw Cartoon: AR Drawing</string>
+
+    <string name="splash_title">Draw Cartoon: AR\nDrawing</string>
+    <string name="splash_hint_bottom">Aplikasi ini mungkin berisi iklan</string>
+    <string name="intro_hint">intro</string>
+    <string name="intro_1_title">Sketsa Pensil Gambar Apa Saja</string>
+    <string name="intro_2_title">Buat Video Menggambar</string>
+    <string name="intro_3_title">Berbagai Templat</string>
+    <string name="btn_next">Lanjut</string>
+    <string name="btn_continue">Lanjutkan</string>
+    <string name="permission_des">Izinkan Draw Cartoon: AR Drawing untuk mengakses\nfoto, media, dan file di perangkat Anda</string>
+    <string name="permission_des_bold">Draw Cartoon: AR Drawing</string>
+    <string name="media_title">Media</string>
+    <string name="permission_title">Izin</string>
+    <string name="trending_title">Trending</string>
+    <string name="draw_cartoon_title">Menggambar Kartun</string>
+    <string name="setting_title">Pengaturan</string>
+    <string name="create_tv">Buat</string>
+    <string name="category_tv">Kategori</string>
+    <string name="my_work_tv">Karya Saya</string>
+
+    <string name="language_title">Bahasa</string>
+    <string name="rate_title">Beri Kami Nilai</string>
+    <string name="share_app_title">Bagikan Aplikasi</string>
+    <string name="privacy_title">Kebijakan Privasi</string>
+    <string name="rate_btn_title">Beri Nilai</string>
+    <string name="exit_title">Keluar</string>
+    <string name="from_camera_title">Dari Kamera</string>
+    <string name="from_gallery_title">Dari Galeri</string>
+
+    <string name="no_star_title">Apakah Anda menyukai aplikasi ini?</string>
+    <string name="one_to_three_star_title">Oh, tidak!</string>
+    <string name="four_five_start_title">Kami juga menyukai Anda!</string>
+
+    <string name="no_star_des">Beritahu kami pengalaman Anda</string>
+    <string name="one_to_three_star_des">Beri kami umpan balik</string>
+    <string name="four_five_start_des">Terima kasih atas umpan balik Anda</string>
+
+    <string name="create_draw_title">Buat Gambar</string>
+    <string name="camera_title">Kamera</string>
+    <string name="photo_title">Foto</string>
+    <string name="video_title">Video</string>
+    <string name="no_photos_yet">Belum ada foto</string>
+    <string name="no_videos_yet">Belum ada video</string>
+    <string name="download_title">Unduh</string>
+    <string name="share_title">Bagikan</string>
+
+    <string name="delete_title">Hapus</string>
+    <string name="delete_description">Apakah Anda ingin menghapus item ini?</string>
+    <string name="success_delete">Berhasil dihapus</string>
+    <string name="instruction_title">Petunjuk</string>
+    <string name="ok_title">OK</string>
+
+    <string name="start_time">00:00</string>
+
+    <string name="download_success">Berhasil disimpan ke galeri</string>
+    <string name="download_failed">Gagal menyimpan ke galeri</string>
+    <string name="share_failed">Tidak dapat membagikan file ini</string>
+
+    <string name="media_permission_error_message">Izin media ditolak</string>
+    <string name="camera_permission_error_message">Izin kamera ditolak</string>
+    <string name="camera_permission_success_message">Izin kamera diterima</string>
+    <string name="no_internet_connected_message">Anda sedang offline. Silakan aktifkan Wi-Fi atau data seluler untuk melanjutkan</string>
+    <string name="internet_connected_message">Internet terhubung</string>
+    <string name="create_image_fail_message">Tidak dapat membuat file gambar</string>
+    <string name="no_title">Tidak</string>
+
+    <string name="no_internet_title">Tidak ada koneksi internet</string>
+    <string name="open_settings_title">Buka Pengaturan</string>
+    <string name="close_title">Tutup</string>
+    <string name="unable_load_image_title">Gagal memuat gambar</string>
+    <string name="unable_load_image_message">Silakan aktifkan Wi-Fi atau data seluler untuk memuat gambar</string>
+
+    <string name="saved_photo_title">Foto disimpan!</string>
+    <string name="saved_video_title">Video disimpan!</string>
+    <string name="saved_photo_des">Foto Anda telah berhasil disimpan ke Karya Saya. Lihat sekarang</string>
+    <string name="saved_video_des">Video Anda telah berhasil disimpan ke Karya Saya. Lihat sekarang</string>
+
+    <string name="view_title">Lihat</string>
+    <string name="play_media_error_message">Tidak dapat memutar media ini %1$s</string>
+
+    <string name="permission_settings_title">Pengaturan Izin</string>
+    <string name="permission_settings_des">Aplikasi membutuhkan izin ini. Silakan aktifkan izin di Pengaturan</string>
+    <string name="cancel_title">Batal</string>
+
+    <string name="please_select_stars_des">Silakan pilih jumlah bintang</string>
+    <string name="no_item_selected_to_delete_des">Pilih setidaknya satu item untuk dihapus</string>
+    <string name="no_item_selected_to_download_des">Pilih setidaknya satu item untuk diunduh</string>
+    <string name="no_item_selected_to_share_des">Pilih setidaknya satu item untuk dibagikan</string>
+
+    <string name="yes_title">Ya</string>
+    <string name="camera_permission_settings_des">Aplikasi memerlukan izin kamera sebelum melakukan tindakan berikutnya</string>
+    <string name="permission_granted">Izin diberikan</string>
+    <string name="permission_denied">Izin ditolak</string>
+    <string name="please_enable_permissions_in_settings">Silakan aktifkan izin di Pengaturan</string>
+</resources>

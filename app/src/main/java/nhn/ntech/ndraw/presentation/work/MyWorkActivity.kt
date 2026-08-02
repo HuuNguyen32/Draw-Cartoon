@@ -1,7 +1,6 @@
 package nhn.ntech.ndraw.presentation.work
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -24,6 +23,7 @@ import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.consts.Const
 import nhn.ntech.ndraw.databinding.ActivityMyWorkBinding
 import nhn.ntech.ndraw.databinding.CustomPopupBinding
+import nhn.ntech.ndraw.ext.navigateTo
 import nhn.ntech.ndraw.helper.PermissionManager
 import nhn.ntech.ndraw.presentation.detail.DetailWorkActivity
 import nhn.ntech.ndraw.presentation.home.MainActivity
@@ -217,7 +217,7 @@ class MyWorkActivity : BaseActivity() {
         btnBack.setOnClickListener {
             exitFromSelectMode()
             if (isFromSketching) {
-                startActivity(Intent(this@MyWorkActivity, MainActivity::class.java))
+                navigateTo<MainActivity>()
             }
             finish()
         }
@@ -302,10 +302,10 @@ class MyWorkActivity : BaseActivity() {
         myWorkAdapter = MyWorkAdapter(
             emptyList(),
             onItemClick = { file ->
-                val intent = Intent(this@MyWorkActivity, DetailWorkActivity::class.java)
-                intent.putExtra(Const.FILE_TAG, file.absolutePath)
-                intent.putExtra(Const.IS_PHOTO_TAG, isPhotoSelected)
-                startActivity(intent)
+                navigateTo<DetailWorkActivity> {
+                    putExtra(Const.FILE_TAG, file.absolutePath)
+                    putExtra(Const.IS_PHOTO_TAG, isPhotoSelected)
+                }
             },
             onMoreClick = { file, itemView ->
                 setPopUp(file, itemView)

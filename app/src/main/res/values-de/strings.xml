@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Draw Cartoon: AR Drawing</string>
+
+    <string name="splash_title">Draw Cartoon: AR\nDrawing</string>
+    <string name="splash_hint_bottom">Diese App kann Werbung enthalten</string>
+    <string name="intro_hint">intro</string>
+    <string name="intro_1_title">Bleistiftskizze für jedes Bild</string>
+    <string name="intro_2_title">Zeichenvideo erstellen</string>
+    <string name="intro_3_title">Verschiedene Vorlagen</string>
+    <string name="btn_next">Weiter</string>
+    <string name="btn_continue">Fortfahren</string>
+    <string name="permission_des">Erlauben Sie Draw Cartoon: AR Drawing den Zugriff auf\nFotos, Medien und Dateien auf Ihrem Gerät</string>
+    <string name="permission_des_bold">Draw Cartoon: AR Drawing</string>
+    <string name="media_title">Medien</string>
+    <string name="permission_title">Berechtigung</string>
+    <string name="trending_title">Trends</string>
+    <string name="draw_cartoon_title">Cartoon zeichnen</string>
+    <string name="setting_title">Einstellungen</string>
+    <string name="create_tv">Erstellen</string>
+    <string name="category_tv">Kategorie</string>
+    <string name="my_work_tv">Meine Werke</string>
+
+    <string name="language_title">Sprache</string>
+    <string name="rate_title">Bewerten Sie uns</string>
+    <string name="share_app_title">App teilen</string>
+    <string name="privacy_title">Datenschutzbestimmungen</string>
+    <string name="rate_btn_title">Bewerten</string>
+    <string name="exit_title">Beenden</string>
+    <string name="from_camera_title">Von Kamera</string>
+    <string name="from_gallery_title">Aus Galerie</string>
+
+    <string name="no_star_title">Gefällt Ihnen die App?</string>
+    <string name="one_to_three_star_title">Oh, nein!</string>
+    <string name="four_five_start_title">Wir lieben Sie auch!</string>
+
+    <string name="no_star_des">Teilen Sie uns Ihre Erfahrungen mit</string>
+    <string name="one_to_three_star_des">Bitte geben Sie uns Feedback</string>
+    <string name="four_five_start_des">Danke für Ihr Feedback</string>
+
+    <string name="create_draw_title">Zeichnung erstellen</string>
+    <string name="camera_title">Kamera</string>
+    <string name="photo_title">Foto</string>
+    <string name="video_title">Video</string>
+    <string name="no_photos_yet">Noch keine Fotos</string>
+    <string name="no_videos_yet">Noch keine Videos</string>
+    <string name="download_title">Herunterladen</string>
+    <string name="share_title">Teilen</string>
+
+    <string name="delete_title">Löschen</string>
+    <string name="delete_description">Möchten Sie dieses Element löschen?</string>
+    <string name="success_delete">Erfolgreich gelöscht</string>
+    <string name="instruction_title">Anleitung</string>
+    <string name="ok_title">OK</string>
+
+    <string name="start_time">00:00</string>
+
+    <string name="download_success">Erfolgreich in Galerie gespeichert</string>
+    <string name="download_failed">Fehler beim Speichern in Galerie</string>
+    <string name="share_failed">Datei kann nicht geteilt werden</string>
+
+    <string name="media_permission_error_message">Medienberechtigung verweigert</string>
+    <string name="camera_permission_error_message">Kameraberechtigung verweigert</string>
+    <string name="camera_permission_success_message">Kameraberechtigung erteilt</string>
+    <string name="no_internet_connected_message">Sie sind offline. Bitte schalten Sie WLAN oder mobile Daten ein, um fortzufahren</string>
+    <string name="internet_connected_message">Mit dem Internet verbunden</string>
+    <string name="create_image_fail_message">Bilddatei konnte nicht erstellt werden</string>
+    <string name="no_title">Nein</string>
+
+    <string name="no_internet_title">Keine Internetverbindung</string>
+    <string name="open_settings_title">Einstellungen öffnen</string>
+    <string name="close_title">Schließen</string>
+    <string name="unable_load_image_title">Bild kann nicht geladen werden</string>
+    <string name="unable_load_image_message">Bitte schalten Sie WLAN oder mobile Daten ein, um die Bilder zu laden</string>
+
+    <string name="saved_photo_title">Foto gespeichert!</string>
+    <string name="saved_video_title">Video gespeichert!</string>
+    <string name="saved_photo_des">Ihr Foto wurde erfolgreich unter Meine Werke gespeichert. Jetzt ansehen</string>
+    <string name="saved_video_des">Ihr Video wurde erfolgreich unter Meine Werke gespeichert. Jetzt ansehen</string>
+
+    <string name="view_title">Ansehen</string>
+    <string name="play_media_error_message">Medien können nicht abgespielt werden %1$s</string>
+
+    <string name="permission_settings_title">Berechtigungseinstellungen</string>
+    <string name="permission_settings_des">Die App benötigt diese Berechtigung. Bitte aktivieren Sie die Berechtigungen in den Einstellungen</string>
+    <string name="cancel_title">Abbrechen</string>
+
+    <string name="please_select_stars_des">Bitte wählen Sie eine Anzahl von Sternen</string>
+    <string name="no_item_selected_to_delete_des">Wählen Sie mindestens ein Element zum Löschen aus</string>
+    <string name="no_item_selected_to_download_des">Wählen Sie mindestens ein Element zum Herunterladen aus</string>
+    <string name="no_item_selected_to_share_des">Wählen Sie mindestens ein Element zum Teilen aus</string>
+
+    <string name="yes_title">Ja</string>
+    <string name="camera_permission_settings_des">Die App benötigt die Kameraberechtigung, bevor die nächste Aktion ausgeführt werden kann</string>
+    <string name="permission_granted">Berechtigung erteilt</string>
+    <string name="permission_denied">Berechtigung verweigert</string>
+    <string name="please_enable_permissions_in_settings">Bitte aktivieren Sie Berechtigungen in den Einstellungen</string>
+</resources>

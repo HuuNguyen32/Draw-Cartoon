@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
+import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
@@ -15,6 +16,7 @@ import nhn.ntech.ndraw.R
 import nhn.ntech.ndraw.consts.Const
 import nhn.ntech.ndraw.databinding.ActivitySplashBinding
 import nhn.ntech.ndraw.domain.prefs.UserPreferences
+import nhn.ntech.ndraw.ext.navigateTo
 import nhn.ntech.ndraw.presentation.Intro.IntroActivity
 import nhn.ntech.ndraw.presentation.language.LanguageActivity
 import nhn.ntech.ndraw.utils.LanguageUtils
@@ -35,6 +37,7 @@ class SplashActivity : BaseActivity() {
         val factory = SplashViewModelFactory(userPreferences)
         viewModel = ViewModelProvider(this, factory = factory)[SplashViewModel::class.java]
 
+        // Không cho bấm back press
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
 
@@ -47,15 +50,12 @@ class SplashActivity : BaseActivity() {
 
                 delay(3000)
                 if (language.isEmpty()) {
-                    val intent = Intent(this@SplashActivity, LanguageActivity::class.java)
-                    intent.putExtra(Const.FLOW_TAG, Const.FLOW_SPLASH_CODE)
-                    startActivity(intent)
-                    finish()
+                    navigateTo<LanguageActivity>(finishCurrent = true) {
+                        putExtra(Const.FLOW_TAG, Const.FLOW_SPLASH_CODE)
+                    }
                 } else {
                     LanguageUtils.setLocale(this@SplashActivity, language)
-                    val intent = Intent(this@SplashActivity, IntroActivity::class.java)
-                    startActivity(intent)
-                    finish()
+                    navigateTo<IntroActivity>(finishCurrent = true)
                 }
             }
         }

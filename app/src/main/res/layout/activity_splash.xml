@@ -18,7 +18,7 @@
         android:clipToOutline="true"
         android:elevation="4dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/img_logo"
+        android:src="@drawable/ic_ar_logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

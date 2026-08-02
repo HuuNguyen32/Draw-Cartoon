@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NDraw</string>
+    <string name="app_name">Draw Cartoon: AR Drawing</string>
 
     <string name="splash_title">Draw Cartoon: AR\nDrawing</string>
     <string name="splash_hint_bottom">This action can contain ads</string>
@@ -91,4 +91,7 @@
 
     <string name="yes_title">Yes</string>
     <string name="camera_permission_settings_des">The app needs camera permission before performing the next action</string>
+    <string name="permission_granted">Permission granted</string>
+    <string name="permission_denied">Permission denied</string>
+    <string name="please_enable_permissions_in_settings">Please enable permissions in Settings</string>
 </resources>
