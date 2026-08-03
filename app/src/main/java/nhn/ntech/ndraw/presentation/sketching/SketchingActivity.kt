@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.SeekBar
 import android.widget.Toast
@@ -41,9 +42,8 @@ import nhn.ntech.ndraw.helper.PermissionManager
 import nhn.ntech.ndraw.presentation.work.MyWorkActivity
 import java.io.File
 
-class SketchingActivity : BaseActivity() {
+class SketchingActivity : BaseActivity<ActivitySketchingBinding>() {
 
-    private lateinit var binding: ActivitySketchingBinding
     private lateinit var viewModel: SketchingViewModel
     private lateinit var photoUri: Uri
     private var imageCapture: ImageCapture? = null
@@ -68,15 +68,18 @@ class SketchingActivity : BaseActivity() {
             }
         }
 
+    override fun inflateBinding(layoutInflater: LayoutInflater): ActivitySketchingBinding {
+        return ActivitySketchingBinding.inflate(layoutInflater)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivitySketchingBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setPaddingScreen()
         viewModel = ViewModelProvider(this)[SketchingViewModel::class.java]
         photoUri = intent.getStringExtra(Const.IMAGE_URI_TAG)?.toUri() ?: Uri.EMPTY
-        initView()
+        initViews()
         setOnListeners()
         observeState()
         startCamera()
@@ -359,7 +362,7 @@ class SketchingActivity : BaseActivity() {
         }
     }
 
-    private fun initView() {
+    private fun initViews() {
         with(binding) {
             tvPhoto.setTextGradientColor()
 

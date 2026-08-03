@@ -1,7 +1,7 @@
 package nhn.ntech.ndraw.presentation.Intro
 
-import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.activity.enableEdgeToEdge
@@ -20,23 +20,25 @@ import nhn.ntech.ndraw.presentation.home.MainActivity
 import nhn.ntech.ndraw.presentation.permission.PermissionActivity
 import nhn.ntech.ndraw.ext.setTextGradientColor
 
-class IntroActivity : BaseActivity() {
+class IntroActivity : BaseActivity<ActivityIntroBinding>() {
 
-    private lateinit var binding: ActivityIntroBinding
     private lateinit var viewModel: IntroViewModel
     private lateinit var userPreferences: UserPreferences
     private lateinit var adapter: IntroAdapter
 
+    override fun inflateBinding(layoutInflater: LayoutInflater): ActivityIntroBinding {
+        return ActivityIntroBinding.inflate(layoutInflater)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityIntroBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setPaddingScreen()
         userPreferences = UserPreferences(this)
         val factory = IntroViewModelFactory(userPreferences)
         viewModel = ViewModelProvider(this, factory)[IntroViewModel::class.java]
-        initView()
+        initViews()
         setAdapter()
         setOnClickListener()
     }
@@ -57,7 +59,7 @@ class IntroActivity : BaseActivity() {
         }
     }
 
-    private fun initView() {
+    private fun initViews() {
         with(binding) {
             val colors = intArrayOf(
                 "#B7ADF4".toColorInt(),

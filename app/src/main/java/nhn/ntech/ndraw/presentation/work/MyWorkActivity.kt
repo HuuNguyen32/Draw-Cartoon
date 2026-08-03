@@ -3,6 +3,7 @@ package nhn.ntech.ndraw.presentation.work
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
@@ -33,9 +34,8 @@ import nhn.ntech.ndraw.utils.ToastUtils
 import java.io.File
 import kotlin.jvm.java
 
-class MyWorkActivity : BaseActivity() {
+class MyWorkActivity : BaseActivity<ActivityMyWorkBinding>() {
 
-    private lateinit var binding: ActivityMyWorkBinding
     private lateinit var myWorkAdapter: MyWorkAdapter
     private lateinit var viewModel: MyWorkViewModel
     private var isPhotoSelected = true
@@ -98,14 +98,17 @@ class MyWorkActivity : BaseActivity() {
         }
     }
 
+    override fun inflateBinding(layoutInflater: LayoutInflater): ActivityMyWorkBinding {
+        return ActivityMyWorkBinding.inflate(layoutInflater)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityMyWorkBinding.inflate(layoutInflater)
         setContentView(binding.root)
         viewModel = ViewModelProvider(this)[MyWorkViewModel::class.java]
         setPaddingScreen()
-        initView()
+        initViews()
         setOnListener()
         observeState()
     }
@@ -293,7 +296,7 @@ class MyWorkActivity : BaseActivity() {
         }
     }
 
-    private fun initView() {
+    private fun initViews() {
         if (isFromSketching) {
             val cateMode = if (isPhotoFromSketching) CateMode.PHOTO else CateMode.VIDEO
             viewModel.updateCateMode(cateMode, filesDir)

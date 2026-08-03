@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.view.LayoutInflater
 import android.view.View
 import androidx.core.net.toUri
 import android.widget.Toast
@@ -34,9 +35,8 @@ import nhn.ntech.ndraw.utils.TransferUtils
 import nhn.ntech.ndraw.helper.PermissionManager
 import nhn.ntech.ndraw.utils.DialogUtils
 
-class CategoryActivity : BaseActivity() {
+class CategoryActivity : BaseActivity<ActivityCategoryBinding>() {
 
-    private lateinit var binding: ActivityCategoryBinding
     private lateinit var viewModel: CategoryViewModel
     private lateinit var categoryAdapter: CategoryAdapter
     private lateinit var itemAdapter: MainAdapter
@@ -63,10 +63,13 @@ class CategoryActivity : BaseActivity() {
             }
         }
 
+    override fun inflateBinding(layoutInflater: LayoutInflater): ActivityCategoryBinding {
+        return ActivityCategoryBinding.inflate(layoutInflater)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityCategoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setPaddingScreen()
         setViewModel()

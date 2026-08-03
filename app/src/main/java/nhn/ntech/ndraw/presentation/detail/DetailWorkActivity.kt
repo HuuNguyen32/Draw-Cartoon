@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.SeekBar
 import android.widget.Toast
@@ -35,7 +36,7 @@ import nhn.ntech.ndraw.utils.ToastUtils
 import nhn.ntech.ndraw.utils.TransferUtils
 import java.io.File
 
-class DetailWorkActivity : BaseActivity() {
+class DetailWorkActivity : BaseActivity<ActivityDetailWorkBinding>() {
 
     private var pendingDownloadAction: (() -> Unit)? = null
 
@@ -70,7 +71,6 @@ class DetailWorkActivity : BaseActivity() {
         }
     }
 
-    private lateinit var binding: ActivityDetailWorkBinding
     private val exoPlayerHelper by lazy { ExoPlayerHelper(this) }
     private val viewModel by lazy { DetailWorkViewModel() }
     private val file: File by lazy {
@@ -92,13 +92,16 @@ class DetailWorkActivity : BaseActivity() {
         }
     }
 
+    override fun inflateBinding(layoutInflater: LayoutInflater): ActivityDetailWorkBinding {
+        return ActivityDetailWorkBinding.inflate(layoutInflater)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityDetailWorkBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setPaddingScreen()
-        initView()
+        initViews()
         setOnListener()
         observeState()
     }
@@ -239,7 +242,7 @@ class DetailWorkActivity : BaseActivity() {
         }
     }
 
-    private fun initView() = with(binding) {
+    private fun initViews() = with(binding) {
         if (isPhoto) {
             tvTitle.text = getString(R.string.photo_title)
             controllerContainer.visibility = View.GONE

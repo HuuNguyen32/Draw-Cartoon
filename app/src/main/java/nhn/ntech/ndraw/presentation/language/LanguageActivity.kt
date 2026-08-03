@@ -3,6 +3,7 @@ package nhn.ntech.ndraw.presentation.language
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
@@ -17,19 +18,21 @@ import nhn.ntech.ndraw.ext.navigateTo
 import nhn.ntech.ndraw.presentation.Intro.IntroActivity
 import nhn.ntech.ndraw.presentation.home.MainActivity
 
-class LanguageActivity : BaseActivity() {
+class LanguageActivity : BaseActivity<ActivityLanguageBinding>() {
 
-    private lateinit var binding: ActivityLanguageBinding
     private lateinit var adapter: LanguageAdapter
     private lateinit var viewModel: LanguageViewModel
     private lateinit var userPreferences: UserPreferences
     private lateinit var languageSelected: Language
     private var flow: Int = -1
 
+    override fun inflateBinding(layoutInflater: LayoutInflater): ActivityLanguageBinding {
+        return ActivityLanguageBinding.inflate(layoutInflater)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityLanguageBinding.inflate(layoutInflater)
         setContentView(binding.root)
         userPreferences = UserPreferences(this)
         val factory = LanguageViewModelFactory(userPreferences)
@@ -37,13 +40,13 @@ class LanguageActivity : BaseActivity() {
             ViewModelProvider(owner = this, factory = factory)[LanguageViewModel::class.java]
         flow = intent.getIntExtra(Const.FLOW_TAG, -1)
         setPaddingScreen()
-        initView()
+        initViews()
         setAdapter()
         observerState()
         setOnClickListener()
     }
 
-    private fun initView() {
+    private fun initViews() {
         if (flow == Const.FLOW_SETTING_CODE) {
             binding.btnBack.visibility = View.VISIBLE
             binding.tvTitle.textAlignment = View.TEXT_ALIGNMENT_CENTER

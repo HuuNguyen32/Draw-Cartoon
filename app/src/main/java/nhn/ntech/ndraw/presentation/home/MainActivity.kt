@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
+import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -40,9 +41,8 @@ import nhn.ntech.ndraw.helper.NetworkObserver
 import nhn.ntech.ndraw.utils.LanguageUtils
 import nhn.ntech.ndraw.utils.ToastUtils
 
-class MainActivity : BaseActivity() {
+class MainActivity : BaseActivity<ActivityMainBinding>() {
 
-    private lateinit var binding: ActivityMainBinding
     private val userPreferences by lazy { UserPreferences(this) }
     private lateinit var adapter: MainAdapter
     private lateinit var viewModel: MainViewModel
@@ -97,10 +97,13 @@ class MainActivity : BaseActivity() {
             uri?.let { handleImageUri(it) }
         }
 
+    override fun inflateBinding(layoutInflater: LayoutInflater): ActivityMainBinding {
+        return ActivityMainBinding.inflate(layoutInflater)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setPaddingScreen()
         setViewModel()

@@ -1,10 +1,10 @@
 package nhn.ntech.ndraw.presentation.permission
 
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
+import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.core.app.ActivityCompat
@@ -24,9 +24,8 @@ import nhn.ntech.ndraw.ext.setTextGradientColor
 
 import nhn.ntech.ndraw.helper.PermissionManager
 
-class PermissionActivity : BaseActivity() {
+class PermissionActivity : BaseActivity<ActivityPermissionBinding>() {
 
-    private lateinit var binding: ActivityPermissionBinding
     private lateinit var viewModel: PermissionViewModel
     private val userPreferences by lazy { UserPreferences(this) }
 
@@ -38,14 +37,17 @@ class PermissionActivity : BaseActivity() {
     private val photoPermission = PermissionManager.photoPermission
     private val cameraPermission = PermissionManager.cameraPermission
 
+    override fun inflateBinding(layoutInflater: LayoutInflater): ActivityPermissionBinding {
+        return ActivityPermissionBinding.inflate(layoutInflater)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityPermissionBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setPaddingScreen()
         viewModel = ViewModelProvider(this)[PermissionViewModel::class.java]
-        initView()
+        initViews()
         setUpListeners()
         observeState()
     }
@@ -102,7 +104,7 @@ class PermissionActivity : BaseActivity() {
         }
     }
 
-    private fun initView() {
+    private fun initViews() {
         with(binding) {
             val colors = intArrayOf(
                 "#B7ADF4".toColorInt(),

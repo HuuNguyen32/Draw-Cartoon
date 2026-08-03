@@ -1,6 +1,7 @@
 package nhn.ntech.ndraw.presentation.setting
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -18,9 +19,8 @@ import nhn.ntech.ndraw.ext.reviewApp
 import nhn.ntech.ndraw.ext.shareApp
 import nhn.ntech.ndraw.utils.ToastUtils
 
-class SettingActivity : BaseActivity() {
+class SettingActivity : BaseActivity<ActivitySettingBinding>() {
 
-    private lateinit var binding: ActivitySettingBinding
     private lateinit var adapter: SettingAdapter
     private val userPreferences by lazy { UserPreferences(this) }
     private val items: List<SettingItem>
@@ -39,10 +39,13 @@ class SettingActivity : BaseActivity() {
             )
         }
 
+    override fun inflateBinding(layoutInflater: LayoutInflater): ActivitySettingBinding {
+        return ActivitySettingBinding.inflate(layoutInflater)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivitySettingBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setPaddingScreen()
         setAdapter()

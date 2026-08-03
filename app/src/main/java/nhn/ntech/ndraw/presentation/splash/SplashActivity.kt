@@ -2,6 +2,7 @@ package nhn.ntech.ndraw.presentation.splash
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.core.os.bundleOf
@@ -21,16 +22,18 @@ import nhn.ntech.ndraw.presentation.Intro.IntroActivity
 import nhn.ntech.ndraw.presentation.language.LanguageActivity
 import nhn.ntech.ndraw.utils.LanguageUtils
 
-class SplashActivity : BaseActivity() {
+class SplashActivity : BaseActivity<ActivitySplashBinding>() {
 
-    private lateinit var binding: ActivitySplashBinding
     private lateinit var viewModel: SplashViewModel
     private lateinit var userPreferences: UserPreferences
+
+    override fun inflateBinding(layoutInflater: LayoutInflater): ActivitySplashBinding {
+        return ActivitySplashBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setPaddingScreen()
         userPreferences = UserPreferences(this)
@@ -64,7 +67,7 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun setPaddingScreen() {
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
